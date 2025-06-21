@@ -21,7 +21,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ GET
 export const fetchData = async (endpoint) => {
   try {
     const response = await api.get(`/${endpoint}`);

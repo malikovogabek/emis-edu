@@ -7,6 +7,8 @@ const GroupDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
+
+
     const [groupData, setGroupData] = useState(null);
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -63,7 +65,7 @@ const GroupDetailsPage = () => {
     }, [loadGroupDetails]);
 
     if (loading) {
-        return <Loader />;
+        return <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>;
     }
 
     if (error) {
@@ -82,14 +84,20 @@ const GroupDetailsPage = () => {
     const curriculumName = groupData?.curriculum_name || groupData?.curriculum?.name || 'N/A';
     const currentSemester = groupData?.current_semester || 'N/A';
     const status = groupData?.status || 'N/A';
+    const handleEditGroup = () => {
+        navigate(`/study-process/groups/${id}/edit`);
+    };
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
             <div className="flex items-center justify-between mb-4">
 
                 <div className="flex space-x-2">
-                    <button className="px-4 py-2 bg-blue-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-blue-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                    <button
+                        onClick={handleEditGroup}
+                        className="px-4 py-2 bg-blue-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-blue-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Tahrirlash
+
                     </button>
                     <button className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Guruhdagi talabalarning baholarini kiritish
@@ -97,7 +105,11 @@ const GroupDetailsPage = () => {
                     <button className="px-4 py-2 bg-amber-400 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-amber-300 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Keyingi semestrga o'tkazish
                     </button>
-                    <button className="px-4 py-2 bg-fuchsia-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-fuchsia-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                    <button
+                        onClick={() => navigate(`/study-process/students/add`)}
+                        className="px-4 py-2 bg-fuchsia-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-fuchsia-400 dark:hover:bg-gray-600 transition duration-200 text-sm"
+
+                    >
                         Talaba qoshish
                     </button>
                     <button
@@ -175,7 +187,7 @@ const GroupDetailsPage = () => {
             </div>
 
             {activeTab === 'students' && (
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md overflow-x-auto">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-sm shadow-sm overflow-x-auto">
                     {students.length > 0 ? (
                         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead className="bg-gray-50 dark:bg-gray-700">

@@ -107,13 +107,16 @@ const StudyGroupsPage = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.current_semester || 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.current_semester || 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.start_year?.name || 'N/A'}</td>
-                                        {/* "Status" (oldingi "ACTIVE") ustuniga onClick hodisasini qo'shamiz */}
+
                                         <td
-                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 cursor-pointer"
-                                            onClick={() => handleViewGroupDetails(group.id)} // Shu yerda ID ni berib yuboramiz
-                                            title="Tafsilotlarni ko'rish uchun bosing"
-                                        >
-                                            {group.status || 'N/A'}
+                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 cursor-pointer">
+                                            <span
+                                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200"
+                                                onClick={() => handleViewGroupDetails(group.id)} // Shu yerda ID ni berib yuboramiz>
+                                            >
+                                                Aktiv
+
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}

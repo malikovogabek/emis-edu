@@ -10,6 +10,7 @@ import StaffPage from './pages/StaffPage';
 import AddStaffPage from './pages/AddStaffPage';
 import StudyGroupsPage from './pages/StudyGroupsPage';
 import GroupDetailsPage from './pages/GroupDetailsPage';
+import GroupEditPage from './pages/GroupEditPage';
 import AddStudyGroupPage from './pages/AddStudyGroupPage';
 import DirectionsPage from './pages/DirectionsPage';
 import TeachersPage from './pages/TeachersPage';
@@ -66,6 +67,7 @@ function App() {
               <Route path="/study-process/groups/add" element={<AddStudyGroupPage />} />
               <Route path="/study-process/groups" element={<StudyGroupsPage />} />
               <Route path="/study-process/groups/:id" element={<GroupDetailsPage />} />
+              <Route path="/study-process/groups/:id/edit" element={<GroupEditPage />} />
               <Route path="/study-process/students/add" element={<AddStudentPage />} />
               <Route path="/study-process/students/:studentId" element={<StudentDetailPage />} />
               <Route path="/study-process/students/:studentId/edit" element={<StudentEditPage />} />

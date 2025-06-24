@@ -40,7 +40,7 @@ const StudentDetailPage = () => {
     }, [studentId]);
 
     if (loading) {
-        return <Loader />;
+        return <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>;
     }
 
     if (error) {

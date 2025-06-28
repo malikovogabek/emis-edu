@@ -24,7 +24,12 @@ api.interceptors.request.use(
 export const fetchData = async (endpoint) => {
   try {
     const response = await api.get(`/${endpoint}`);
-    return { success: true, ...response.data };
+    const data = response.data || {};
+    return {
+      success: true,
+      ...data, // ⚠️ Spread oldin
+      results: data.results || [], // keyin aniqlik uchun qo‘shiladi
+    };
   } catch (error) {
     console.error(
       `Error fetching data from ${endpoint}:`,

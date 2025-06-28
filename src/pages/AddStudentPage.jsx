@@ -386,8 +386,6 @@ const StudentEditPage = () => {
             status: formData.status,
         };
 
-        console.log("Submitting payload:", payload);
-
         try {
             let response;
             if (studentId && studentId !== 'add') {

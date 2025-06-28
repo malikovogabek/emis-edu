@@ -87,6 +87,9 @@ const GroupDetailsPage = () => {
     const handleEditGroup = () => {
         navigate(`/study-process/groups/${id}/edit`);
     };
+    const handleNavigateToRatingsPage = () => {
+        navigate(`/study-process/groups/${id}/ratings`);
+    };
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
@@ -99,7 +102,9 @@ const GroupDetailsPage = () => {
                         Tahrirlash
 
                     </button>
-                    <button className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                    <button
+                        onClick={handleNavigateToRatingsPage}
+                        className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Guruhdagi talabalarning baholarini kiritish
                     </button>
                     <button className="px-4 py-2 bg-amber-400 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-amber-300 dark:hover:bg-gray-600 transition duration-200 text-sm">
@@ -214,8 +219,8 @@ const GroupDetailsPage = () => {
                                             {`${student.school_certificate_serial || ''} ${student.school_certificate_number || ''}`.trim() || 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            {Object.keys(student.subjects || {}).length > 0 ? JSON.stringify(student.subjects) : 'N/A'} <br />
-                                            Ballari: N/A
+                                            {Object.keys(student.subjects || {}).length > 0 ? JSON.stringify(student.subjects) : '-'} <br />
+
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <button

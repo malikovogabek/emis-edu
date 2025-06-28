@@ -1,0 +1,172 @@
+export interface Root {
+  results: Result[][]
+  total_results: number
+  total_pages: number
+  code: number
+  success: boolean
+  error: any
+}
+
+export interface Result {
+  student_id: number
+  student: Student
+  edu_subject_ratings: EduSubjectRating[]
+}
+
+export interface Student {
+  id: number
+  citizen_id: number
+  citizen: Citizen
+  institution_id: number
+  school_id: number
+  school: School
+  region_id: number
+  region: Region
+  district_id: number
+  district: District
+  edu_group_id: number
+  edu_group: EduGroup
+  school_certificate_serial: string
+  school_certificate_number: string
+  school_finished_year: number
+  diploma_serial: string
+  diploma_number: string
+  registration_number: string
+  diploma_type: string
+  is_finished_local_school: boolean
+  status: string
+  subjects: Subjects
+}
+
+export interface Citizen {
+  id: number
+  pinfl: string
+  serial_number?: string
+  birth_date: string
+  first_name: string
+  middle_name: string
+  last_name: string
+  gender_id: number
+  birth_cert_serial: string
+  birth_cert_number: string
+  citizenship_type_id: number
+  citizenship_type: CitizenshipType
+}
+
+export interface CitizenshipType {
+  id: number
+  name: string
+}
+
+export interface School {
+  id: number
+  name: Name
+  old_name: OldName
+  institution_type_id: number
+  region_id: number
+  district_id: number
+  xtv_id: number
+  diploma_serial: string
+  director: Director
+  deputy_director: DeputyDirector
+  address: Address
+  edu_type_id: number
+  is_under_institution: boolean
+}
+
+export interface Name {
+  uz: string
+  ru: string
+  en: string
+}
+
+export interface OldName {
+  uz: string
+  ru: string
+  en: string
+}
+
+export interface Director {
+  uz: string
+  ru: string
+  en: string
+}
+
+export interface DeputyDirector {
+  uz: string
+  ru: string
+  en: string
+}
+
+export interface Address {
+  uz: string
+  ru: string
+  en: string
+}
+
+export interface Region {
+  id: number
+  country_id: number
+  name: string
+  soato_id: number
+}
+
+export interface District {
+  id: number
+  region_id: number
+  name: string
+  soato_id: number
+}
+
+export interface EduGroup {
+  id: number
+  name: string
+  institution_id: number
+  curriculum_id: number
+  start_year_code: number
+  end_year_code: number
+  number_of_students: number
+  current_semester: number
+  attestation_chairman_name: any
+  class_hours_funds: any
+  status: string
+}
+
+export interface Subjects {}
+
+export interface EduSubjectRating {
+  edu_subject_id: number
+  edu_subject: EduSubject
+  rating?: number
+}
+
+export interface EduSubject {
+  id: number
+  name: Name2
+  edu_subject_type_id: number
+  edu_subject_type: any
+  status: string
+  parent_id: number
+  can_be_divided: boolean
+  is_custom: boolean
+  description?: string
+}
+
+export interface Name2 {
+  uz: string
+  ru: string
+  en: string
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

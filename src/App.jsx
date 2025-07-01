@@ -25,8 +25,11 @@ import AddStudentPage from './pages/AddStudentPage';
 import GraduatesPage from './pages/GraduatesPage';
 import ClassHoursPage from './pages/ClassHoursPage';
 import BuildingsPage from './pages/BuildingsPage';
+import AddBuildingsPage from './pages/AddBuildingsPage';
 import RoomsPage from './pages/RoomsPage';
+import AddRoomsPage from './pages/AddRoomsPage';
 import ReportsTeachersPage from './pages/ReportsTeachersPage';
+import AddReportsTeachersPage from './pages/AddReportsTeachersPage';
 
 
 
@@ -78,11 +81,15 @@ function App() {
               <Route path="/study-process/lesson-hours" element={<ClassHoursPage />} />
 
               <Route path="/tm-info" element={<TmInfoHomePage />} />
+              <Route path="/tm-info/buildings/add" element={<AddBuildingsPage />} />
               <Route path="/tm-info/buildings" element={<BuildingsPage />} />
+              <Route path="/tm-info/rooms/add" element={<AddRoomsPage />} />
               <Route path="/tm-info/rooms" element={<RoomsPage />} />
+
 
               <Route path="/reports" element={<ReportsHomePage />} />
               <Route path="/reports/teachers" element={<ReportsTeachersPage />} />
+              <Route path="/reports/teachers/add" element={<AddReportsTeachersPage />} />
 
               <Route path="*" element={<p className="p-6 text-xl text-red-500">Sahifa topilmadi (404)</p>} />
             </Routes>

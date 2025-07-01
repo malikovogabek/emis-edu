@@ -173,7 +173,16 @@ const GroupRatingsPage = () => {
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
             <div className="flex justify-between mb-4">
                 <h1 className="text-3xl font-bold">Guruh baholari</h1>
-                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-red-500 text-white rounded">Ortga</button>
+                <div className="flex justify-end gap-3">
+                    <button onClick={handleSaveRatings}
+                        className="px-4 py-2 bg-green-500 text-white rounded">
+                        Saqlash
+                    </button>
+                    <button onClick={() => navigate(-1)}
+                        className="px-4 py-2 bg-white text-red-600 text-sm rounded-md  transition duration-200">
+                        Orqaga
+                    </button>
+                </div>
             </div>
 
             {error && <p className="text-red-600 mb-4">{error}</p>}

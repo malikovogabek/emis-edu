@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchData } from '../api/api';
 import Loader from "../components/Loader";
+import { nextCursApiService, prevCursApiService, toFinishGroupApiService } from '../service/study';
 
 const GroupDetailsPage = () => {
     const { id } = useParams();
@@ -84,42 +85,76 @@ const GroupDetailsPage = () => {
     const curriculumName = groupData?.curriculum_name || groupData?.curriculum?.name || 'N/A';
     const currentSemester = groupData?.current_semester || 'N/A';
     const status = groupData?.status || 'N/A';
+
+
     const handleEditGroup = () => {
         navigate(`/study-process/groups/${id}/edit`);
     };
     const handleNavigateToRatingsPage = () => {
         navigate(`/study-process/groups/${id}/ratings`);
     };
+    const handlePrevGroups = async () => {
+        await prevCursApiService(groupIdDisplay);
+        await loadGroupDetails();
+    };
+
+    const handleNextGroups = async () => {
+        await nextCursApiService(groupIdDisplay)
+        await loadGroupDetails()
+    };
+
+    const handleFinishGroup = async () => {
+        await toFinishGroupApiService(groupIdDisplay)
+        await loadGroupDetails()
+    }
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
             <div className="flex items-center justify-between mb-4">
 
                 <div className="flex space-x-2">
-                    <button
-                        onClick={handleEditGroup}
-                        className="px-4 py-2 bg-blue-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-blue-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                        Tahrirlash
+                    {currentSemester === 1 && (
+                        <button
+                            onClick={handleEditGroup}
+                            className="px-4 py-2 bg-blue-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-blue-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                            Tahrirlash
 
-                    </button>
+                        </button>
+                    )}
                     <button
                         onClick={handleNavigateToRatingsPage}
                         className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Guruhdagi talabalarning baholarini kiritish
                     </button>
-                    <button className="px-4 py-2 bg-amber-400 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-amber-300 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                        Keyingi semestrga o'tkazish
-                    </button>
-                    <button
-                        onClick={() => navigate(`/study-process/students/add`)}
-                        className="px-4 py-2 bg-fuchsia-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-fuchsia-400 dark:hover:bg-gray-600 transition duration-200 text-sm"
-
-                    >
-                        Talaba qoshish
-                    </button>
+                    {currentSemester > 1 && (
+                        <button
+                            onClick={handlePrevGroups}
+                            className="px-4 py-2 bg-red-600 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-red-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                            Avvalgi semisterga qaytarish
+                        </button>
+                    )}
+                    {currentSemester === 4 && (
+                        <button
+                            onClick={handleFinishGroup}
+                            className="px-4 py-2 bg-cyan-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-cyan-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                            Guruhni bitirish
+                        </button>
+                    )}
+                    {currentSemester !== 4 && (
+                        <button onClick={handleNextGroups} className="px-4 py-2 bg-amber-400 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-amber-300 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                            Keyingi semestrga o'tkazish
+                        </button>
+                    )}
+                    {currentSemester === 1 && (
+                        <button
+                            onClick={() => navigate(`/study-process/students/add`)}
+                            className="px-4 py-2 bg-fuchsia-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-fuchsia-400 dark:hover:bg-gray-600 transition duration-200 text-sm" >
+                            Talaba qoshish
+                        </button>
+                    )}
                     <button
                         onClick={() => navigate('/study-process/groups')}
-                        className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-700 transition duration-200"
+                        className="px-4 py-2 bg-white text-red-600 text-sm rounded-md  transition duration-200"
                     >
                         Ortga
                     </button>

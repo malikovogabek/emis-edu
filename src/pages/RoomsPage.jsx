@@ -1,56 +1,27 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchData, deleteData, postData } from '../api/api';
+import { fetchData, deleteData } from '../api/api';
 import Loader from "../components/Loader";
+import { useNavigate } from 'react-router-dom';
 
 const RoomsPage = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
     const [error, setError] = useState(null);
+    const [postSuccess, setPostSuccess] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(20);
     const [totalCount, setTotalCount] = useState(0);
 
-    const [newRoom, setNewRoom] = useState({
-        room_name: '',
-        building: { name: '' },
-        capacity: '',
-        floor_number: ''
-    });
-    const [postSuccess, setPostSuccess] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const [buildingsList, setBuildingsList] = useState([]);
-    const [buildingsLoading, setBuildingsLoading] = useState(true);
-    const [buildingsError, setBuildingsError] = useState(null);
-
-    const loadBuildingsList = useCallback(async () => {
-        setBuildingsLoading(true);
-        setBuildingsError(null);
-        try {
-            const response = await fetchData('buildings/');
-            if (response.success && Array.isArray(response.results)) {
-                setBuildingsList(response.results);
-            } else {
-                setBuildingsError("Binolar ro'yxatini yuklashda xatolik: " + (response.error || 'Noma’lum xato'));
-            }
-        } catch (err) {
-            setBuildingsError("Binolar ro'yxatini yuklashda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
-        } finally {
-            setBuildingsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        loadBuildingsList();
-    }, [loadBuildingsList]);
+    const navigate = useNavigate();
 
     const loadPageData = useCallback(async () => {
         setLoading(true);
         setError(null);
+        setPostSuccess(null);
         try {
-
             let url = `rooms/?page=${currentPage}&size=${pageSize}`;
             if (searchQuery) {
                 url += `&search=${searchQuery}`;
@@ -87,46 +58,12 @@ const RoomsPage = () => {
         loadPageData();
     }, [loadPageData]);
 
-    const handleAddRoom = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setPostSuccess(null);
-
-        try {
-            const response = await postData('rooms/', {
-                room_name: newRoom.room_name,
-                building: parseInt(newRoom.building.name),
-                capacity: parseInt(newRoom.capacity),
-                floor_number: parseInt(newRoom.floor_number)
-            });
-
-            if (response.success) {
-                setCurrentPage(1);
-                setNewRoom({
-                    room_name: '',
-                    building: { name: '' },
-                    capacity: '',
-                    floor_number: ''
-                });
-                setPostSuccess('Xona muvaffaqiyatli qo‘shildi!');
-                setShowForm(false);
-            } else {
-                setError('Xona qo‘shishda xatolik: ' + (response.error || 'Noma’lum xato'));
-            }
-        } catch (err) {
-            console.error("Xona qo‘shishda xatolik:", err);
-            setError("Xona qo‘shishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
-        } finally {
-            setLoading(false);
-            loadPageData();
-        }
-    };
     const handleDeleteRoom = async (roomId) => {
         if (!window.confirm("Haqiqatan ham ushbu xonani o'chirmoqchimisiz?")) return;
 
         setLoading(true);
         setError(null);
+        setPostSuccess(null);
         try {
             const response = await deleteData(`rooms/${roomId}/`);
 
@@ -141,20 +78,6 @@ const RoomsPage = () => {
             setError("Xonani o'chirishda xatolik yuz berdi: " + err.message);
         } finally {
             setLoading(false);
-        }
-    };
-
-
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "building.name") {
-            setNewRoom(prev => ({
-                ...prev,
-                building: { ...prev.building, name: value }
-            }));
-        } else {
-            setNewRoom(prev => ({ ...prev, [name]: value }));
         }
     };
 
@@ -198,88 +121,15 @@ const RoomsPage = () => {
                 </div>
                 <div>
                     <button
-                        onClick={() => setShowForm(!showForm)}
+                        onClick={() => navigate('/tm-info/rooms/add')}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        {showForm ? "Formani yashirish" : "+ Yangi kiritish"}
+                        + Yangi kiritish
                     </button>
                 </div>
             </div>
 
-            {showForm && (
-                <div className="mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Yangi Xona Qo‘shish</h2>
-                    <form onSubmit={handleAddRoom} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Xona nomi</label>
-                            <input
-                                type="text"
-                                name="room_name"
-                                value={newRoom.room_name}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Bino nomi</label>
-                            {buildingsLoading ? (
-                                <p>Binolar yuklanmoqda...</p>
-                            ) : buildingsError ? (
-                                <p className="text-red-600">{buildingsError}</p>
-                            ) : (
-                                <select
-                                    name="building.name"
-                                    value={newRoom.building.name}
-                                    onChange={handleInputChange}
-                                    className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
-                                    required
-                                >
-                                    <option value="">Tanlang...</option>
-                                    {buildingsList.map(building => (
-                                        <option key={building.id} value={building.id}>{building.name}</option>
-                                    ))}
-                                </select>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Xona sig'imi</label>
-                            <input
-                                type="number"
-                                name="capacity"
-                                value={newRoom.capacity}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
-                                required
-                                min="1"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Xona nechanchi etajda</label>
-                            <input
-                                type="number"
-                                name="floor_number"
-                                value={newRoom.floor_number}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
-                                required
-                                min="1"
-                            />
-                        </div>
-                        <div className="col-span-1 md:col-span-2 flex justify-end">
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                                disabled={loading || buildingsLoading}
-                            >
-                                {loading ? 'Yuklanmoqda...' : 'Qo‘shish'}
-                            </button>
-                        </div>
-                        {postSuccess && <p className="text-green-600 col-span-full">{postSuccess}</p>}
-                        {error && <p className="text-red-600 col-span-full">{error}</p>}
-                    </form>
-                </div>
-            )}
+            {postSuccess && <p className="text-green-600 mb-4">{postSuccess}</p>}
 
             {loading ? (
                 <Loader />
@@ -298,7 +148,7 @@ const RoomsPage = () => {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amallar</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+                        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                             {rooms.map((room, index) => (
                                 <tr key={room.id}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -330,7 +180,6 @@ const RoomsPage = () => {
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
                 </div>
             ) : (

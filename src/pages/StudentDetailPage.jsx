@@ -76,18 +76,18 @@ const StudentDetailPage = () => {
                 <h1 className="text-2xl font-bold mb-4">Talaba ma'lumotlari</h1>
                 <div className="flex justify-end mb-4">
                     <button
-                        onClick={() => navigate('/study-process/students/')}
-                        className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-400 dark:hover:bg-gray-700 transition duration-200 mr-2"
-                    >
-                        Orqaga
-                    </button>
-                    <button
                         onClick={() => navigate(`/study-process/students/${studentId}/edit`)}
                         className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition duration-200 mr-2"
                     >
                         Tahrirlash
                     </button>
-                    <button className="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition duration-200">O'chirish</button>
+                    <button className="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition duration-200 mr-2">O'chirish</button>
+                    <button
+                        onClick={() => navigate('/study-process/students/')}
+                        className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-400 dark:hover:bg-gray-700 transition duration-200 mr-2"
+                    >
+                        Orqaga
+                    </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

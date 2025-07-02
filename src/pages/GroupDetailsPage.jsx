@@ -161,41 +161,45 @@ const GroupDetailsPage = () => {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">ID</p>
-                        <p className="font-medium text-lg">{groupIdDisplay}</p>
-                    </div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Guruh Nomi</p>
-                        <p className="font-medium text-lg">{groupName}</p>
-                    </div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Ochilgan O'quv Yili</p>
-                        <p className="font-medium text-lg">{currentAcademicYear}</p>
-                    </div>
-                </div>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 w-1/2 md:w-1/3 lg:w-1/4">ID</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{groupIdDisplay}</td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruh Nomi</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{groupName}</td>
+                            </tr>
 
-                <div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Status</p>
-                        <p className={`font-medium text-lg ${status === 'Active' ? 'text-green-500' : 'text-green-500'}`}>{status}</p>
-                    </div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Guruhga kiritiladigan talabalar soni</p>
-                        <p className="font-medium text-lg">{studentCount}</p>
-                    </div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">O'quv reja</p>
-                        <p className="font-medium text-lg">{curriculumName}</p>
-                    </div>
-                    <div className="mb-2">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Guruhning joriy semestri</p>
-                        <p className="font-medium text-lg">{currentSemester}</p>
-                    </div>
-                </div>
-                <div>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Ochilgan O'quv Yili</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{currentAcademicYear}</td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruhga kiritilishi kerak bo'lgan talabalar soni</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{studentCount}</td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">O'quv reja</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculumName}</td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruhning joriy semestri</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{currentSemester}</td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Status</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm">
+                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status === 'Aktiv' ? 'bg-green-100 text-green-500' : 'bg-green-100 text-green-500'}`}>
+                                        {status}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -285,7 +289,7 @@ const GroupDetailsPage = () => {
             )}
             {activeTab === 'grouping' && (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                    Guruhlash ma'lumotlari bu yerda ko'rsatiladi.
+                    <h2 className=' text-xl'>Bu guruxda bulinuvchi fanlar mavjud emas.</h2>
                 </div>
             )}
             {activeTab === 'control' && (

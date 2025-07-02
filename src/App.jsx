@@ -17,6 +17,8 @@ import DirectionsPage from './pages/DirectionsPage';
 import TeachersPage from './pages/TeachersPage';
 import AddTeacherPage from './pages/AddTeacherPage';
 import CurriculumsPage from './pages/CurriculumsPage';
+import CurriculumDetailsPage from './pages/CurriculumDetailsPage';
+import CurriculumEditPage from './pages/CurriculumEditPage';
 import AddCurriculumPage from './pages/AddCurriculumPage';
 import StudentsPage from './pages/StudentsPage';
 import StudentDetailPage from './pages/StudentDetailPage';
@@ -68,6 +70,8 @@ function App() {
               <Route path="/study-process" element={<StudyProcessHomePage />} />
               <Route path="/study-process/plans/add" element={<AddCurriculumPage />} />
               <Route path="/study-process/plans" element={<CurriculumsPage />} />
+              <Route path="/study-process/plans/details/:id" element={<CurriculumDetailsPage />} />
+              <Route path="/study-process/plans/details/:id/edit" element={<CurriculumEditPage />} />
               <Route path="/study-process/groups/add" element={<AddStudyGroupPage />} />
               <Route path="/study-process/groups" element={<StudyGroupsPage />} />
               <Route path="/study-process/groups/:id" element={<GroupDetailsPage />} />

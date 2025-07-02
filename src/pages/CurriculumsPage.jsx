@@ -43,6 +43,9 @@ const CurriculumsPage = () => {
     const handleAddNewCurriculumClick = () => {
         navigate('/study-process/plans/add');
     };
+    const handleViewDetailsClick = (curriculumId) => {
+        navigate(`/study-process/plans/details/${curriculumId}`);
+    };
 
     const filteredCurriculums = curriculums.filter(curriculum =>
         curriculum.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -87,7 +90,7 @@ const CurriculumsPage = () => {
             </div>
 
             {loading ? (
-                <Loader />
+                <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>
             ) : error ? (
                 <p className="text-red-600 dark:text-red-400">Xato: {error}</p>
             ) : currentItems.length > 0 ? (
@@ -115,6 +118,7 @@ const CurriculumsPage = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.curriculum_template ? curriculum.curriculum_template.number_of_semesters : 'N/A'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <span
+                                            onClick={() => handleViewDetailsClick(curriculum.id)}
                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-500 cursor-pointer hover:bg-blue-200"
 
                                         >

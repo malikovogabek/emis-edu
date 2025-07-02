@@ -9,12 +9,11 @@ const api = axios.create({
   },
 });
 
-// 🔐 Har bir so‘rovga localStorage'dagi token avtomatik qo‘shiladi
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // 👈 Token shu yerda olinadi
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `${token}`; // <<-- Faqat token qiymati
+      config.headers.Authorization = `${token}`;
     }
     return config;
   },
@@ -27,8 +26,8 @@ export const fetchData = async (endpoint) => {
     const data = response.data || {};
     return {
       success: true,
-      ...data, // ⚠️ Spread oldin
-      results: data.results || [], // keyin aniqlik uchun qo‘shiladi
+      ...data,
+      results: data.results || [],
     };
   } catch (error) {
     console.error(

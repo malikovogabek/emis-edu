@@ -10,13 +10,20 @@ const GraduatesPage = () => {
     useEffect(() => {
         const loadGraduates = async () => {
             try {
-                const responseData = await fetchData('graduates/');
+                const responseData = await fetchData(`edu-groups/?status=GRADUATE`);
 
-                if (responseData && responseData.success && Array.isArray(responseData.results)) {
-                    setGraduates(responseData.results);
-                } else if (responseData && responseData.success && responseData.results === null) {
-                    setGraduates([]);
-                    console.warn("Bitiruvchilar ma'lumoti topilmadi (results: null):", responseData);
+                if (responseData && responseData.success) {
+                    const dataToSet = responseData.result || responseData.results;
+                    if (Array.isArray(dataToSet)) {
+                        setGraduates(dataToSet);
+                    } else if (dataToSet === null) {
+                        setGraduates([]);
+                        console.warn("Bitiruvchilar ma'lumoti topilmadi (result/results: null):", responseData);
+                    } else {
+                        setError("API dan kutilgan ma'lumot formati kelmadi (Array emas): " + JSON.stringify(responseData));
+                        setGraduates([]);
+                        console.error("API dan kutilgan ma'lumot formati kelmadi (Array emas):", responseData);
+                    }
                 } else {
                     setError("API dan kutilgan ma'lumot formati kelmadi yoki xato: " + JSON.stringify(responseData));
                     setGraduates([]);
@@ -34,30 +41,30 @@ const GraduatesPage = () => {
         loadGraduates();
     }, []);
 
+
+
+
     const renderTableContent = () => {
         if (graduates.length > 0) {
             return (
                 graduates.map((graduate, index) => (
                     <tr key={graduate.id || index}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{index + 1}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.group_name || graduate.group?.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.curriculum_name || graduate.curriculum?.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.direction_name || graduate.direction?.name || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.name || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.curriculum?.name || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.edu_direction?.name || 'N/A'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.course || 'N/A'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.semester || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.academic_year || 'N/A'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.academic_year || graduate.start_year?.name || 'N/A'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.status || 'N/A'}</td>
                     </tr>
                 ))
             );
         } else {
-            // Ma'lumot yo'qligida chiqadigan qator
             return (
                 <tr>
                     <td colSpan="8" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
                         <div className="flex flex-col items-center justify-center py-8">
-                            {/* SVG ikonkani ham dark mode'ga moslash uchun style yoki class berishingiz mumkin */}
-                            {/* Agar ikonka SVG bo'lsa va rangini o'zgartira olsa, `fill-current text-gray-500 dark:text-gray-300` kabi klasslar berish mumkin */}
                             <img src="/src/assets/no_data_icon.svg" alt="Ma'lumot topilmadi" className="w-16 h-16 mb-2 dark:filter dark:invert" />
                             <p>Ma'lumot topilmadi</p>
                         </div>

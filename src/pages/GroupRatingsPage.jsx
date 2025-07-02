@@ -35,7 +35,7 @@ const GroupRatingsPage = () => {
             HARDCODED_SEMESTERS.forEach((sem, index) => {
                 const semesterArray = subjectData[index] || [];
                 semesterSubjects[sem.id] = semesterArray
-                    .filter((sub) => sub.status === "ACTIVE")
+
                     .map((sub) => ({
                         id: sub.id,
                         name:

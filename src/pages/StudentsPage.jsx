@@ -138,7 +138,9 @@ const StudentsPage = () => {
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {students.map((student, index) => (
-                                <tr key={student.id}>
+                                <tr key={student.id}
+                                    onClick={() => handleStudentStatusClick(student.id)}
+                                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out" >
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{(currentPage - 1) * pageSize + index + 1}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                         {`${student.citizen?.last_name || ''} ${student.citizen?.first_name || ''} ${student.citizen?.middle_name || ''}`.trim() || 'N/A'}
@@ -149,7 +151,6 @@ const StudentsPage = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                         <span
                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200"
-                                            onClick={() => handleStudentStatusClick(student.id)}
                                         >
                                             O'qimoqda
                                         </span>

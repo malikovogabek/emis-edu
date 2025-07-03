@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login/index';
 
+
 import Dashboard from './pages/Dashboard';
 import StaffPage from './pages/StaffPage';
 import AddStaffPage from './pages/AddStaffPage';
@@ -60,6 +61,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path='/login' element={<Login />} />
+
 
               <Route path="/admin-process" element={<AdminProcessHomePage />} />
               <Route path="/study-process/directions" element={<DirectionsPage />} />

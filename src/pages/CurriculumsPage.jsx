@@ -108,7 +108,9 @@ const CurriculumsPage = () => {
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {currentItems.map((curriculum, index) => (
-                                <tr key={curriculum.id}>
+                                <tr key={curriculum.id}
+                                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+                                    onClick={() => handleViewDetailsClick(curriculum.id)}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                                         {(currentPage - 1) * itemsPerPage + index + 1}
                                     </td>
@@ -118,7 +120,6 @@ const CurriculumsPage = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.curriculum_template ? curriculum.curriculum_template.number_of_semesters : 'N/A'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <span
-                                            onClick={() => handleViewDetailsClick(curriculum.id)}
                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-500 cursor-pointer hover:bg-blue-200"
 
                                         >

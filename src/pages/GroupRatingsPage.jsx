@@ -1,4 +1,3 @@
-// GroupRatingsPage.jsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchData, putData } from '../api/api';
@@ -53,7 +52,6 @@ const GroupRatingsPage = () => {
             setAllSubjects({});
         }
     }, [groupId]);
-
 
     const formatSemesterData = (studentsData) => {
         return studentsData.map((studentData) => {
@@ -190,7 +188,8 @@ const GroupRatingsPage = () => {
             {HARDCODED_SEMESTERS.map(semester => {
                 const students = allSemesterRatings[semester.id] || [];
                 const subjects = allSubjects[semester.id] || [];
-                const inputVisiblity = semester.id !== 1
+                const currentSemester = localStorage.getItem("current_semester");
+                const inputVisiblity = semester.id !== Number(currentSemester)
 
                 return (
                     <div key={semester.id} className="bg-white dark:bg-gray-800 p-6 rounded shadow mb-6">

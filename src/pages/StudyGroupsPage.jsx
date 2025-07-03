@@ -45,7 +45,6 @@ const StudyGroupsPage = () => {
         navigate('/study-process/groups/add');
     };
 
-    // Guruh tafsilotlari sahifasiga o'tish funksiyasi
     const handleViewGroupDetails = (groupId) => {
         navigate(`/study-process/groups/${groupId}`);
     };
@@ -99,7 +98,10 @@ const StudyGroupsPage = () => {
                                     group.start_year?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                     group.status.toLowerCase().includes(searchQuery.toLowerCase())
                                 ).map((group, index) => (
-                                    <tr key={group.id}>
+                                    <tr key={group.id}
+                                        onClick={() => handleViewGroupDetails(group.id)} // <--- O'zgartirish shu yerda: butun qatorni bosiladigan qildik
+                                        className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out" // Kursor va hover effekti
+                                    >
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{index + 1}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.name || 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.curriculum?.name || 'N/A'}</td>
@@ -109,10 +111,11 @@ const StudyGroupsPage = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.start_year?.name || 'N/A'}</td>
 
                                         <td
-                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 cursor-pointer">
+                                            className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
+                                        >
                                             <span
-                                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200"
-                                                onClick={() => handleViewGroupDetails(group.id)} // Shu yerda ID ni berib yuboramiz>
+                                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+
                                             >
                                                 Aktiv
 

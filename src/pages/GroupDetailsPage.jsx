@@ -92,6 +92,7 @@ const GroupDetailsPage = () => {
     };
     const handleNavigateToRatingsPage = () => {
         navigate(`/study-process/groups/${id}/ratings`);
+        localStorage.setItem("current_semester", currentSemester)
     };
     const handlePrevGroups = async () => {
         await prevCursApiService(groupIdDisplay);
@@ -121,6 +122,10 @@ const GroupDetailsPage = () => {
 
                         </button>
                     )}
+                    <button
+                        className="px-4 py-2 bg-cyan-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-cyan-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
+                        Joriy semester uchun o'quv soatlari taqsimoti
+                    </button>
                     <button
                         onClick={handleNavigateToRatingsPage}
                         className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">

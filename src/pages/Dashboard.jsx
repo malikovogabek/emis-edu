@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { fetchData } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Loader from "../components/Loader";
+import TokenInput from '../components/TokenInput';
+
 
 function Dashboard() {
     const [data, setData] = useState(null);
@@ -36,6 +38,8 @@ function Dashboard() {
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
             <h1 className="text-2xl font-bold mb-4">Asosiy Panel (Dashboard)</h1>
+
+            <TokenInput />
             {loading ? (
                 <Loader />
             ) : error ? (

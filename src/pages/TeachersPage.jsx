@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchData } from "../api/api";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
 const TeachersPage = () => {
@@ -8,7 +8,7 @@ const TeachersPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const loadTeachers = useCallback(async () => {
         setLoading(true);
@@ -37,9 +37,9 @@ const TeachersPage = () => {
         loadTeachers();
     }, [loadTeachers]);
 
-    const handleAddNewTeacherClick = () => {
-        navigate('/admin-process/teachers/add');
-    };
+    // const handleAddNewTeacherClick = () => {
+    //     navigate('/admin-process/teachers/add');
+    // };
 
     const filteredTeachers = teachers.filter(teacher =>
         teacher.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -60,14 +60,14 @@ const TeachersPage = () => {
                         className="p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
                     />
                 </div>
-                <div>
+                {/* <div>
                     <button
                         onClick={handleAddNewTeacherClick}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
                         + Yangi kiritish
                     </button>
-                </div>
+                </div> */}
             </div>
 
             {loading ? (

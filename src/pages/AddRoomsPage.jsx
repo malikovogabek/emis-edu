@@ -74,14 +74,6 @@ const AddRoomsPage = () => {
                         disabled={loading}
                     >
                         <Form.Item
-                            label="Xona nomi"
-                            name="room_name"
-                            rules={[{ required: true, message: 'Iltimos, xona nomini kiriting' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item
                             label="Bino"
                             name="building"
                             rules={[{ required: true, message: 'Iltimos, bino tanlang' }]}
@@ -93,6 +85,15 @@ const AddRoomsPage = () => {
                             </Select>
                         </Form.Item>
 
+
+                        <Form.Item
+                            label="Xona nomi"
+                            name="room_name"
+                            rules={[{ required: true, message: 'Iltimos, xona nomini kiriting' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+
                         <Form.Item
                             label="Xona sigʻimi"
                             name="capacity"
@@ -102,16 +103,25 @@ const AddRoomsPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Qavat raqami"
+                            label="Xona nechanchi qavatda joylashgan"
                             name="floor_number"
                             rules={[{ required: true, message: 'Iltimos, qavat raqamini kiriting' }]}
                         >
                             <InputNumber min={1} className="w-full" />
                         </Form.Item>
 
+
+                        <Form.Item
+                            label="Xona haqida malumot"
+                            name="description"
+                            rules={[{ required: true, message: 'Ma’lumot kiriting' }]}
+                        >
+                            <Input.TextArea rows={2} />
+                        </Form.Item>
+
                         <Form.Item className="flex justify-end space-x-2">
                             <Button type="primary" htmlType="submit" loading={loading}>
-                                Qo‘shish
+                                Saqlash
                             </Button>
                             <Button danger onClick={() => navigate('/tm-info/rooms')}>
                                 Orqaga

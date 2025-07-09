@@ -73,7 +73,7 @@ const AddStudyGroupPage = () => {
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Yangi Guruh Qo‘shish</h1>
             <Card className="shadow-md">
-                <Form
+                <Form className="grid grid-cols-1 md:grid-cols-2  gap-3"
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
@@ -99,7 +99,7 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Ochilgan o‘quv yili"
+                        label="Brinchi o'quv yili"
                         name="start_year_code"
                         rules={[{ required: true, message: "O‘quv yili tanlanishi kerak" }]}
                     >
@@ -111,6 +111,22 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
+                        label="Oxirgi o'quv yili"
+                        name="start_year_code2"
+                        rules={[{ required: true, message: "Boshlanish yili kerak" }]}
+                    >
+                        <Input placeholder="" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Guruhga kiritilishi kerak bo‘lgan talabalar soni"
+                        name="soni"
+                        rules={[{ required: true, type: Number, message: "Boshlanish yili kerak" }]}
+                    >
+                        <Input placeholder="" />
+                    </Form.Item>
+
+                    <Form.Item
                         label="Joriy semestr"
                         name="current_semester"
                         rules={[{ required: true, type: 'number', min: 1, message: 'Semestr raqami 1 dan katta bo‘lishi kerak' }]}
@@ -118,7 +134,7 @@ const AddStudyGroupPage = () => {
                         <InputNumber className="w-full" min={1} />
                     </Form.Item>
 
-                    <Form.Item>
+                    <Form.Item className="col-span-full">
                         <div className="flex justify-end gap-2">
                             <Button
                                 type="default"

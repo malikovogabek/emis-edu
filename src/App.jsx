@@ -91,6 +91,7 @@ function App() {
               <Route path="/tm-info/buildings/add" element={<AddBuildingsPage />} />
               <Route path="/tm-info/buildings" element={<BuildingsPage />} />
               <Route path="/tm-info/rooms/add" element={<AddRoomsPage />} />
+              <Route path="/tm-info/rooms/edit/:roomId" element={<AddRoomsPage />} />
               <Route path="/tm-info/rooms" element={<RoomsPage />} />
 
 

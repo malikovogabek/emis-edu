@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Button, message, Card, DatePicker, Modal, InputNumber, Table } from "antd";
-import { postData } from "../api/api";
+import { postData, fetchData } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
@@ -11,39 +11,73 @@ const AddStaffPage = () => {
     const [positionModalOpen, setPositionModalOpen] = useState(false);
     const [positions, setPositions] = useState([]);
     const [positionForm] = Form.useForm();
+    const [citizenships, setCitizenships] = useState([]);
+
+
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const loadCitizenships = async () => {
+            const response = await fetchData("students/citizenships/");
+            if (response.success) {
+                setCitizenships(response.results);
+            } else {
+                console.error("Fuqaroliklar olinmadi:", response.error);
+            }
+        };
+
+        loadCitizenships();
+    }, []);
+
+
     const handleAddStaff = async (values) => {
+        if (positions.length === 0) {
+            message.warning("Iltimos, avval lavozim qo‘shing");
+            setPositionModalOpen(true);
+            return;
+        }
+
+        const payload = {
+            ...values,
+            staff_positions: positions,
+        };
+
         setLoading(true);
         try {
-            const response = await postData("staffs/", values);
+            const response = await postData("staffs/", payload);
 
             if (response.success) {
                 message.success("Xodim muvaffaqiyatli qo'shildi!");
                 form.resetFields();
+                setPositions([]);
                 setTimeout(() => {
                     navigate("/admin-process/staffs");
                 }, 1500);
             } else {
-                let errorMessage = "Noma'lum xato";
-                if (response.error) {
-                    const err = response.error;
-                    if (err.detail) errorMessage = err.detail;
-                    else if (err.message) errorMessage = err.message;
-                    else if (err.non_field_errors) errorMessage = err.non_field_errors.join(', ');
-                    else errorMessage = JSON.stringify(err);
-                }
+                let errorMessage = response.error?.message || "Noma'lum xatolik";
                 message.error("Xatolik: " + errorMessage);
             }
         } catch (err) {
             console.error("Tarmoq xatosi:", err);
-            message.error("Tarmoq xatolik: " + (err.response?.data?.error || err.message));
+
+            let errMsg = "Tizimda nimadir xato bo‘ldi. Iltimos, keyinroq urinib ko‘ring.";
+
+            if (err.response?.data?.error?.messages) {
+                errMsg = err.response.data.error.messages;
+            }
+
+            message.error({
+                content: errMsg,
+                duration: 3,
+            });
         } finally {
             setLoading(false);
         }
     };
+
     const handleCheckPassport = async () => {
         const values = form.getFieldsValue();
+        console.log(values)
         const { jshshir, birth_date, passport } = values;
 
         if (!jshshir || !birth_date || !passport) {
@@ -52,28 +86,30 @@ const AddStaffPage = () => {
         }
 
         try {
-            const response = await postData("by-passport/", {
-                jshshir,
-                birth_date: values.birth_date?.format("YYYY-MM-DD"),
-                passport,
+            const response = await postData("students/info/by-passport/", {
+                pinfl: jshshir,
+                serial_number: passport,
+                birth_date: birth_date.format("DD.MM.YYYY"),
             });
 
-            if (response?.first_name) {
+            if (response?.result) {
+                const { first_name, last_name, middle_name, id } = response.result;
                 form.setFieldsValue({
-                    first_name: response.first_name,
-                    last_name: response.last_name,
-                    father_name: response.father_name,
-                    citizenship: response.citizenship || "UZ",
+                    first_name,
+                    last_name,
+                    father_name: middle_name,
+                    citizen_id: id,
                 });
-                message.success("Ma’lumotlar topildi");
+                message.success("Ma'lumotlar muvaffaqiyatli topildi");
             } else {
-                message.error("Ma’lumot topilmadi");
+                message.error("Ma'lumot topilmadi");
             }
         } catch (error) {
             console.error("Xato:", error);
-            message.error("Server bilan bog‘lanishda muammo");
+            message.error("Server bilan bog‘lanishda xatolik");
         }
     };
+
 
 
 
@@ -82,7 +118,7 @@ const AddStaffPage = () => {
             <div>
                 <Card className="shadow-md">
                     <p className="text-lg  mb-4 text-gray-800 dark:text-white">O'qituvchi qidirish</p>
-                    <Form layout="vertical" className="grid grid-cols-1 md:grid-cols-7 gap-3">
+                    <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-7 gap-3">
                         <Form.Item
                             label="JSHSHIR"
                             name="jshshir"
@@ -123,6 +159,9 @@ const AddStaffPage = () => {
                         onFinish={handleAddStaff}
                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
+                        <Form.Item name="citizen_id" hidden>
+                            <Input />
+                        </Form.Item>
                         <Form.Item
                             label="Ismi"
                             name="first_name"
@@ -153,11 +192,14 @@ const AddStaffPage = () => {
                             rules={[{ required: true, message: "Fuqarolik tanlang" }]}
                         >
                             <Select placeholder="Tanlang">
-                                <Option value="UZ">O'zbekiston fuqorosi</Option>
-                                <Option value="RU">Chet el fuqorosi</Option>
-                                <Option value="KZ">Fuqaroligi yo'q shaxs</Option>
+                                {citizenships.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
+
 
                         <Form.Item className="md:col-span-2 flex justify-end m-3 gap-2">
                             <Button type="primary" htmlType="submit" loading={loading}>Saqlash</Button>
@@ -208,9 +250,10 @@ const AddStaffPage = () => {
                     form={positionForm}
                     layout="vertical"
                     onFinish={(values) => {
-                        setPositions([...positions, values]);
+                        setPositions((prev) => [...prev, values]);
                         setPositionModalOpen(false);
                         positionForm.resetFields();
+                        message.success("Lavozim qo‘shildi");
                     }}
                 >
                     <Form.Item
@@ -232,8 +275,8 @@ const AddStaffPage = () => {
                     >
                         <Select>
                             <Option value="To'liq stavka">Asosiy ish joyi</Option>
-                            <Option value="stavka">O'rindoshlik(ichki-qo'shimcha)</Option>
-                            <Option value="stavka">O'rindoshlik(ichki-asosiy)</Option>
+                            <Option value="qoshimcha">O'rindoshlik(ichki-qo'shimcha)</Option>
+                            <Option value="asosiy">O'rindoshlik(ichki-asosiy)</Option>
                             <Option value="stavka">O'rindoshlik(tashqi)</Option>
                             <Option value="soatbay">Soatbay</Option>
                         </Select>

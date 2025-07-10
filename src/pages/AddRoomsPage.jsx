@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { postData, fetchData } from '../api/api';
+import { useNavigate, useParams } from 'react-router-dom';
+import { postData, fetchData, putData } from '../api/api';
 import { Form, Input, InputNumber, Select, Button, Card, message, Spin } from 'antd';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 const AddRoomsPage = () => {
     const [form] = Form.useForm();
@@ -11,6 +12,9 @@ const AddRoomsPage = () => {
     const [buildings, setBuildings] = useState([]);
     const [buildingsLoading, setBuildingsLoading] = useState(true);
     const navigate = useNavigate();
+    const { roomId } = useParams();
+
+    const isEditing = !!roomId;
 
     const loadBuildingsList = useCallback(async () => {
         setBuildingsLoading(true);
@@ -28,30 +32,73 @@ const AddRoomsPage = () => {
         }
     }, []);
 
+    const loadRoomDataForEdit = useCallback(async () => {
+        if (!roomId) return;
+
+        setLoading(true);
+        try {
+            const response = await fetchData(`rooms/${roomId}/`);
+            if (response.success && response.results) {
+                form.setFieldsValue({
+                    room_name: response.results.name,
+                    building: response.results.building?.id,
+                    capacity: response.results.capacity,
+                    floor_number: response.results.storey,
+                    description: response.results.description || ''
+                });
+            } else {
+                message.error("Xona ma'lumotini yuklashda xatolik: " + (response.error || 'Nomaʼlum xato'));
+                navigate('/tm-info/rooms');
+            }
+        } catch (err) {
+            message.error("Xona ma'lumotini yuklashda tarmoq xatosi: " + (err.response?.data?.error || err.message));
+            navigate('/tm-info/rooms');
+        } finally {
+            setLoading(false);
+        }
+    }, [roomId, form, navigate]);
+
     useEffect(() => {
         loadBuildingsList();
-    }, [loadBuildingsList]);
+        if (isEditing) {
+            loadRoomDataForEdit();
+        } else {
+            form.resetFields();
+        }
+    }, [loadBuildingsList, loadRoomDataForEdit, isEditing, form]);
 
     const handleSubmit = async (values) => {
         setLoading(true);
         try {
             const payload = {
-                room_name: values.room_name,
+                name: values.room_name,
                 building: values.building,
                 capacity: values.capacity,
-                floor_number: values.floor_number
+                storey: values.floor_number,
+                description: values.description
             };
 
-            const response = await postData('rooms/', payload);
-            if (response.success) {
-                message.success("Xona muvaffaqiyatli qo‘shildi!");
-                form.resetFields();
-                setTimeout(() => navigate('/tm-info/rooms'), 1500);
+            let response;
+            if (isEditing) {
+                response = await putData(`rooms/${roomId}/`, payload);
+                if (response.success) {
+                    message.success("Xona muvaffaqiyatli tahrirlandi!");
+                    setTimeout(() => navigate('/tm-info/rooms'), 1500);
+                } else {
+                    message.error("Xonani tahrirlashda xatolik: " + (response.error || 'Nomaʼlum xato'));
+                }
             } else {
-                message.error("Xona qo‘shishda xatolik: " + (response.error || 'Nomaʼlum xato'));
+                response = await postData('rooms/', payload);
+                if (response.success) {
+                    message.success("Xona muvaffaqiyatli qo‘shildi!");
+                    form.resetFields();
+                    setTimeout(() => navigate('/tm-info/rooms'), 1500);
+                } else {
+                    message.error("Xona qo‘shishda xatolik: " + (response.error || 'Nomaʼlum xato'));
+                }
             }
         } catch (err) {
-            message.error("Xona qo‘shishda tarmoq xatolik yuz berdi: " + (err.response?.data?.error || err.message));
+            message.error(`${isEditing ? 'Xonani tahrirlashda' : 'Xona qo‘shishda'} tarmoq xatolik yuz berdi: ` + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }
@@ -59,19 +106,18 @@ const AddRoomsPage = () => {
 
     return (
         <div className="p-4  bg-gray-100 dark:bg-gray-900 flex-1">
-
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-                Yangi Xona Qo‘shish
+                {isEditing ? 'Xonani Tahrirlash' : 'Yangi Xona Qo‘shish'}
             </h1>
             <Card>
-                {buildingsLoading ? (
-                    <Spin tip="Binolar yuklanmoqda..." />
+                {buildingsLoading || (loading && isEditing) ? (
+                    <Spin tip={buildingsLoading ? "Binolar yuklanmoqda..." : "Xona ma'lumotlari yuklanmoqda..."} />
                 ) : (
                     <Form
                         form={form}
                         layout="vertical"
                         onFinish={handleSubmit}
-                        disabled={loading}
+                        disabled={loading && !buildingsLoading}
                     >
                         <Form.Item
                             label="Bino"
@@ -114,24 +160,28 @@ const AddRoomsPage = () => {
                         <Form.Item
                             label="Xona haqida malumot"
                             name="description"
-                            rules={[{ required: true, message: 'Ma’lumot kiriting' }]}
                         >
-                            <Input.TextArea rows={2} />
+                            <TextArea rows={2} />
                         </Form.Item>
 
-                        <Form.Item className="flex justify-end space-x-2">
-                            <Button type="primary" htmlType="submit" loading={loading}>
-                                Saqlash
-                            </Button>
-                            <Button danger onClick={() => navigate('/tm-info/rooms')}>
-                                Orqaga
-                            </Button>
+                        <Form.Item className="col-span-full">
+                            <div className="flex justify-end space-x-2">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={loading}
+                                >
+                                    {isEditing ? 'Saqlash' : 'Qo‘shish'}
+                                </Button>
+                                <Button danger onClick={() => navigate('/tm-info/rooms')}>
+                                    Orqaga
+                                </Button>
+                            </div>
                         </Form.Item>
                     </Form>
                 )}
             </Card>
         </div>
-
     );
 };
 

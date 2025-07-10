@@ -81,6 +81,10 @@ const RoomsPage = () => {
         }
     };
 
+    const handleEditRoom = (roomId) => {
+        navigate(`/tm-info/rooms/edit/${roomId}`);
+    };
+
     const handlePageChange = (pageNumber) => {
         if (pageNumber > 0 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
@@ -167,7 +171,10 @@ const RoomsPage = () => {
                                         {room.storey || 'N/A'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-2">
+                                        <button
+                                            onClick={() => handleEditRoom(room.id)}
+                                            className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-2"
+                                        >
                                             Tahrirlash
                                         </button>
                                         <button

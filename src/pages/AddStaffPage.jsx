@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Button, message, Card, DatePicker, Modal, InputNumber, Table } from "antd";
+import { Form, Input, Select, Button, message, Card, DatePicker, Modal, InputNumber, Table, Alert } from "antd";
 import { postData, fetchData } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
@@ -46,6 +46,16 @@ const AddStaffPage = () => {
         try {
             const response = await postData("staffs/", payload);
 
+            if (response.error) {
+                let errMsg = "Tizimda nimadir xato bo‘ldi. Iltimos, keyinroq urinib ko‘ring.";
+
+                alert(errMsg)
+                // message.error({
+                //     content: errMsg,
+                //     duration: 3000,
+                // })
+            }
+
             if (response.success) {
                 message.success("Xodim muvaffaqiyatli qo'shildi!");
                 form.resetFields();
@@ -58,7 +68,6 @@ const AddStaffPage = () => {
                 message.error("Xatolik: " + errorMessage);
             }
         } catch (err) {
-            console.error("Tarmoq xatosi:", err);
 
             let errMsg = "Tizimda nimadir xato bo‘ldi. Iltimos, keyinroq urinib ko‘ring.";
 
@@ -68,7 +77,7 @@ const AddStaffPage = () => {
 
             message.error({
                 content: errMsg,
-                duration: 3,
+                duration: 3000,
             });
         } finally {
             setLoading(false);
@@ -77,7 +86,6 @@ const AddStaffPage = () => {
 
     const handleCheckPassport = async () => {
         const values = form.getFieldsValue();
-        console.log(values)
         const { jshshir, birth_date, passport } = values;
 
         if (!jshshir || !birth_date || !passport) {
@@ -167,7 +175,7 @@ const AddStaffPage = () => {
                             name="first_name"
                             rules={[{ required: true, message: "Ism majburiy" }]}
                         >
-                            <Input />
+                            <Input readOnly disabled />
                         </Form.Item>
 
                         <Form.Item
@@ -175,7 +183,7 @@ const AddStaffPage = () => {
                             name="last_name"
                             rules={[{ required: true, message: "Familiya majburiy" }]}
                         >
-                            <Input />
+                            <Input readOnly disabled />
                         </Form.Item>
 
                         <Form.Item
@@ -183,7 +191,7 @@ const AddStaffPage = () => {
                             name="father_name"
                             rules={[{ required: true, message: "Otasining ismi majburiy" }]}
                         >
-                            <Input />
+                            <Input readOnly disabled />
                         </Form.Item>
 
                         <Form.Item

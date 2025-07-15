@@ -72,7 +72,7 @@ const AddRoomsPage = () => {
         try {
             const payload = {
                 name: values.room_name,
-                building: values.building,
+                building_id: values.building,
                 capacity: values.capacity,
                 storey: values.floor_number,
                 description: values.description

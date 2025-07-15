@@ -78,6 +78,23 @@ const GroupDetailsPage = () => {
         );
     }
 
+    const handleOpenLessonDistributionPage = () => {
+        navigate(`/study-process/groups/${id}/lesson-distribution`);
+    };
+
+    if (loading) {
+        return <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>;
+    }
+
+    if (error) {
+        return (
+            <div className="p-4 text-red-600 dark:text-red-400">
+                <p>Xato: {error}</p>
+                <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md">Ortga qaytish</button>
+            </div>
+        );
+    }
+
     const groupName = groupData?.name || 'N/A';
     const groupIdDisplay = groupData?.id || 'N/A';
     const currentAcademicYear = groupData?.opened_academic_year || groupData?.start_year?.name || 'N/A';
@@ -123,6 +140,7 @@ const GroupDetailsPage = () => {
                         </button>
                     )}
                     <button
+                        onClick={handleOpenLessonDistributionPage}
                         className="px-4 py-2 bg-cyan-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-cyan-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
                         Joriy semester uchun o'quv soatlari taqsimoti
                     </button>

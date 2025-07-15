@@ -38,15 +38,18 @@ const AddStudyGroupPage = () => {
         try {
             const payload = {
                 name: values.name,
-                curriculum: parseInt(values.curriculum),
+                curriculum_id: parseInt(values.curriculum),
                 start_year_code: parseInt(values.start_year_code),
-                edu_form_id: 1,
-                edu_language_id: 1,
+                end_year_code: parseInt(values.start_year_code2),
                 current_semester: parseInt(values.current_semester),
-                institution_id: 10778,
-                speciality: { uz: " ", ru: " ", en: " " },
-                status: "APPROVED"
+                number_of_students: parseInt(values.soni),
+                description: " ",
             };
+            console.log("Yuborilayotgan payload:", payload);
+            console.log('start_year_code', typeof values.start_year_code, values.start_year_code);
+            console.log('end_year_code', typeof values.start_year_code2, values.start_year_code2);
+
+
 
             const response = await postData('edu-groups/', payload);
 
@@ -63,11 +66,22 @@ const AddStudyGroupPage = () => {
                 message.error("Xatolik: " + errorMessage);
             }
         } catch (err) {
-            message.error("Tarmoq xatolik: " + err.message);
+            console.error("Tarmoq xatolik:", err.response?.data || err.message);
+            message.error("Tarmoq xatolik: " + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }
     };
+    const handleStartYearsChange = (value) => {
+        const currentIndex = startYearsOptions.findIndex(option => option.id === value);
+        const nextItem = startYearsOptions[currentIndex + 1];
+        if (nextItem) {
+            form.setFieldsValue({ start_year_code2: nextItem.id });
+        } else {
+            form.setFieldsValue({ start_year_code2: null });
+        }
+    };
+
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
@@ -103,9 +117,9 @@ const AddStudyGroupPage = () => {
                         name="start_year_code"
                         rules={[{ required: true, message: "O‘quv yili tanlanishi kerak" }]}
                     >
-                        <Select placeholder="Tanlang">
-                            {startYearsOptions.map(option => (
-                                <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
+                        <Select placeholder="Tanlang" onChange={handleStartYearsChange}>
+                            {startYearsOptions.map((option, idx) => (
+                                <Select.Option key={option.id} value={option.id} disabled={idx === startYearsOptions.length - 1}>{option.name}</Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
@@ -115,7 +129,14 @@ const AddStudyGroupPage = () => {
                         name="start_year_code2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Input placeholder="" />
+                        <Select placeholder="Tanlang">
+                            {startYearsOptions.map(option => (
+                                <Select.Option key={option.id} value={option.id}>
+                                    {option.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+
                     </Form.Item>
 
                     <Form.Item

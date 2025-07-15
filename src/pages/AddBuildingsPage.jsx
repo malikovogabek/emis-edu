@@ -52,11 +52,13 @@ const AddBuildingsPage = () => {
         try {
             const payload = {
                 name: values.name,
-                floor_count: values.floor_count,
-                region: values.region,
-                district: values.district,
-                description: values.description
+                description: values.description,
+                region_id: values.region,
+                district_id: values.district,
+                storeys: values.floor_count,
+                location: { lat: 0, lon: 0 }
             };
+
             const response = await postData('buildings/', payload);
             if (response.success) {
                 message.success('Bino muvaffaqiyatli qo‘shildi!');

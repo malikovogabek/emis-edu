@@ -8,17 +8,23 @@ const AddCurriculumPage = () => {
     const [curriculumOptions, setCurriculumOptions] = useState([]);
     const [startYearOptions, setStartYearOptions] = useState([]);
     const [directionsOptions, setDirectionsOptions] = useState([]);
+    const [evaluationOptions, setEvaliationOptions] = useState([]);
+    const [languagesOptions, setLanguagesOptions] = useState([]);
+    const [formsOptions, setFormsOptions] = useState([]);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadOptions = async () => {
             try {
-                const [curriculumRes, yearRes, directions] = await Promise.all([
-                    fetchData('curriculums/'),
+                const [curriculumRes, yearRes, directions, evaluation, languages, forms] = await Promise.all([
+                    fetchData('curriculum-templates/'),
                     fetchData('edu-years/'),
-                    fetchData(`edu-directions/`)
+                    fetchData(`edu-directions/`),
+                    fetchData(`rating-types/`),
+                    fetchData(`edu-languages/`),
+                    fetchData(`edu-forms/`)
                 ]);
 
                 if (curriculumRes.success) setCurriculumOptions(curriculumRes.results);
@@ -29,6 +35,15 @@ const AddCurriculumPage = () => {
 
                 if (directions.success) setDirectionsOptions(directions.results);
                 else message.error("talim yunalishini yuklashda xatolik");
+
+                if (evaluation.success) setEvaliationOptions(evaluation.results);
+                else message.error("Baholash truni yuklashda xatolik");
+
+                if (languages.success) setLanguagesOptions(languages.results);
+                else message.error("Talim tilini yuklashda xatolik");
+
+                if (forms.success) setFormsOptions(forms.results);
+                else message.error("Talim shaklini yuklashda xatolik");
             } catch (err) {
                 message.error("Ma'lumotlarni yuklashda tarmoq xatolik: " + err.message);
             } finally {
@@ -44,9 +59,13 @@ const AddCurriculumPage = () => {
         try {
             const payload = {
                 name: values.name,
-                edu_direction: { name: values.edu_direction },
-                start_year: { name: values.start_year },
-                curriculum_template: { number_of_semesters: parseInt(values.number_of_semesters) }
+                curriculum_template_id: values.reja,
+                edu_direction_id: values.edu_direction,
+                edu_form_id: values.shakl,
+                edu_language_id: values.edu_language_id,
+                rating_type_id: values.ballik,
+                start_year_code: values.start_year,
+                end_year_code: values.start_year2,
             };
 
             const response = await postData("curriculums/", payload);
@@ -76,8 +95,19 @@ const AddCurriculumPage = () => {
         }
     };
 
+    const handleStartYearChange = (value) => {
+        const currentIndex = startYearOptions.findIndex(option => option.id === value);
+        const nextItem = startYearOptions[currentIndex + 1];
+        if (nextItem) {
+            form.setFieldValue("start_year2", nextItem.id)
+        }
+    };
+
+
+
+
     return (
-        <div className="p-4 bg-gray-100 dark:bg-gray-900  flex-1">
+        <div className="p-4 bg-gray-100 dark:bg-gray-900  text-gray-900 dark:text-gray-100  flex-1">
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Yangi O‘quv Rejasi Qo‘shish</h1>
 
             <Card className="shadow-md">
@@ -112,7 +142,9 @@ const AddCurriculumPage = () => {
                         rules={[{ required: true, message: "Nomi majburiy" }]}
                     >
                         <Select placeholder="Tanlang">
-                            <Option value="shakl">Kunduzgi</Option>
+                            {formsOptions.map(option => (
+                                <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
 
@@ -133,30 +165,31 @@ const AddCurriculumPage = () => {
                         name="start_year"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Select placeholder="Tanlang">
-                            {startYearOptions.map(option => (
-                                <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
+                        <Select placeholder="Tanlang" onChange={handleStartYearChange}>
+                            {startYearOptions.map((option, idx) => (
+                                <Select.Option key={option.id} value={option.id} disabled={idx === startYearOptions.length - 1}>{option.name}</Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
 
                     <Form.Item
-                        label="kkinchi o‘quv yili"
+                        label="Ikkinchi o‘quv yili"
                         name="start_year2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Input placeholder="" />
+                        <Input value={startYearOptions.find(option => option.id === form.getFieldValue("start_year2"))?.name || ''} readOnly disabled />
+
                     </Form.Item>
 
                     <Form.Item
                         label="Talim tili"
-                        name="uz"
+                        name="edu_language_id"
                         rules={[{ required: true, message: "Tilni tanlang" }]}
                     >
-                        <Select >
-                            <Option value="uz">O'zbek tili</Option>
-                            <Option value="ruz">Rus tili</Option>
-                            <Option value="Qoraqolpoq">Qoraqolpoq tili</Option>
+                        <Select placeholder="Tanlang">
+                            {languagesOptions.map(option => (
+                                <Select.Option key={option.id} value={option.id}>{option.name.uz}</Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
 
@@ -165,9 +198,10 @@ const AddCurriculumPage = () => {
                         name="ballik"
                         rules={[{ required: true, message: "Majburiy" }]}
                     >
-                        <Select>
-                            <option value="ballik">Ballik</option>
-                            <option value="baholik">Baholik</option>
+                        <Select placeholder="Tanlang">
+                            {evaluationOptions.map(option => (
+                                <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
 

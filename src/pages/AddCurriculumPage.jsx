@@ -177,7 +177,13 @@ const AddCurriculumPage = () => {
                         name="start_year2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Input value={startYearOptions.find(option => option.id === form.getFieldValue("start_year2"))?.name || ''} readOnly disabled />
+                        <Select disabled>
+                            {startYearOptions.map(option => (
+                                <Select.Option key={option.id} value={option.id}>
+                                    {option.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
 
                     </Form.Item>
 

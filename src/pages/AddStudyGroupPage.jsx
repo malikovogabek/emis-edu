@@ -34,6 +34,7 @@ const AddStudyGroupPage = () => {
     }, []);
 
     const onFinish = async (values) => {
+
         setLoading(true);
         try {
             const payload = {
@@ -45,9 +46,7 @@ const AddStudyGroupPage = () => {
                 number_of_students: parseInt(values.soni),
                 description: " ",
             };
-            console.log("Yuborilayotgan payload:", payload);
-            console.log('start_year_code', typeof values.start_year_code, values.start_year_code);
-            console.log('end_year_code', typeof values.start_year_code2, values.start_year_code2);
+
 
 
 
@@ -129,13 +128,14 @@ const AddStudyGroupPage = () => {
                         name="start_year_code2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select disabled>
                             {startYearsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>
                                     {option.name}
                                 </Select.Option>
                             ))}
                         </Select>
+
 
                     </Form.Item>
 

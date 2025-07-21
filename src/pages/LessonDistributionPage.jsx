@@ -157,7 +157,7 @@ const LessonDistributionPage = () => {
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-bold">O'quv soatlari taqsimoti (Guruh ID: {groupId})</h1>
+                <h1 className="text-xl font-bold">O'quv soatlari taqsimoti </h1>
                 <Button type="default" onClick={() => navigate(-1)}>Ortga</Button>
             </div>
 

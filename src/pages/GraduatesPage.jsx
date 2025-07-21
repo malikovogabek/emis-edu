@@ -75,15 +75,15 @@ const GraduatesPage = () => {
     };
 
     return (
-        <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
+        <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 overflow-y-auto dark:text-gray-100">
             <h1 className="text-2xl font-bold mb-4">Bitiruvchilar</h1>
             {loading ? (
                 <Loader />
             ) : error ? (
                 <p className="text-red-600 dark:text-red-400">Xato: {error}</p>
             ) : (
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="bg-white dark:bg-gray-800  p-6 rounded-lg overflow-y-auto shadow-md ">
+                    <table className="min-w-full divide-y divide-gray-200  dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>

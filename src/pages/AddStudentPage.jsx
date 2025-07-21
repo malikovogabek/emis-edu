@@ -5,7 +5,7 @@ import { Await, useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
-const StudentEditPage = () => {
+const AddStudentPage = () => {
     const [form] = Form.useForm();
     const [regions, setRegions] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -414,4 +414,4 @@ const StudentEditPage = () => {
     );
 };
 
-export default StudentEditPage;
+export default AddStudentPage;

@@ -98,7 +98,8 @@ const GroupDetailsPage = () => {
     const groupName = groupData?.name || 'N/A';
     const groupIdDisplay = groupData?.id || 'N/A';
     const currentAcademicYear = groupData?.opened_academic_year || groupData?.start_year?.name || 'N/A';
-    const studentCount = groupData?.student_count || students.length || 'N/A';
+    const studentCount = groupData?.student_count || groupData?.number_of_students || students.length || 'N/A';
+
     const curriculumName = groupData?.curriculum_name || groupData?.curriculum?.name || 'N/A';
     const currentSemester = groupData?.current_semester || 'N/A';
     const status = groupData?.status || 'N/A';

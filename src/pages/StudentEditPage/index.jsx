@@ -1,819 +1,326 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Select, Button, DatePicker, Card, message } from "antd";
 import { fetchData, putData } from "../../api/api";
-import Loader from "../../components/Loader";
-import { fetchDistricts, fetchNeighborhood, fetchRegions } from "./StudentEditPage.api";
-import { InputSelect } from "../../components/InputSelect";
+import { useParams, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+
+const { Option } = Select;
 
 const StudentEditPage = () => {
-    const { studentId } = useParams();
-    const navigate = useNavigate();
-    const [studentDetails, setStudentDetails] = useState(null);
-    const [formData, setFormData] = useState({});
+    const [form] = Form.useForm();
     const [regions, setRegions] = useState([]);
-    const [districts, setDistricts] = useState([])
-    const [neighbourhoods, setNeighbourhoods] = useState([])
-    const [searchFormData, setSearchFormData] = useState({
-        pinfl: "",
-        birth_date_check: "",
-        passport_serial: "",
-        passport_number: "",
-        birth_cert_serial: "",
-        birth_cert_number: "",
-        birth_date_cert_check: "",
-    });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
-    const [checkError, setCheckError] = useState(null);
+    const [districts, setDistricts] = useState([]);
+    const [neighbourhoods, setNeighbourhoods] = useState([]);
+    const [citizenships, setCitizenships] = useState([]);
+    const [schoolDistricts, setSchoolDistricts] = useState([]);
+    const [schools, setSchools] = useState([]);
+    const [socialStatuses, setSocialStatuses] = useState([]);
+    const [eduGroups, setEduGroups] = useState([]);
+    const [profile, setProfile] = useState(null);
 
-    const formatDateForDisplay = (dateString) => {
-        if (!dateString) return "";
-        const parts = dateString.split("-");
-        if (parts.length === 3) {
-            return `${parts[2]}.${parts[1]}.${parts[0]}`;
-        }
-        return dateString;
-    };
+    const [citizenId, setCitizenId] = useState(null);
+    const [userInstitutionName, setUserInstitutionName] = useState("");
+    const { studentId } = useParams();
 
-    const formatDateForAPI = (dateString) => {
-        if (!dateString) return null;
-        const parts = dateString.split(".");
-        if (parts.length === 3) {
-            return `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-        return dateString;
-    };
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchStudentDetails = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await fetchData(`students/${studentId}/`);
-                if (response && response.success && response.result) {
-                    setStudentDetails(response.result);
-                    const citizen = response.result.citizen;
+        loadInitialData();
+        loadStudentData();
+    }, []);
 
-                    setFormData({
-                        last_name: citizen?.last_name || "",
-                        first_name: citizen?.first_name || "",
-                        middle_name: citizen?.middle_name || "",
-                        citizenship_type_name: citizen?.citizenship_type?.name || "",
+    const loadInitialData = async () => {
+        const [regionsData, citizenshipsData, socialStatusesData, eduGroupsData, profileData] = await Promise.all([
+            fetchData("regions/?country_id=1"),
+            fetchData("students/citizenships/"),
+            fetchData("social-statuses/"),
+            fetchData("edu-groups/?page=1&limit=100"),
+            fetchData("users/profile/")
+        ]);
 
-                        permanent_region_name:
-                            citizen?.address_permanent?.region?.name || "",
-                        permanent_district_name:
-                            citizen?.address_permanent?.district?.name || "",
-                        permanent_mahalla_name:
-                            citizen?.address_permanent?.mahalla?.name || "",
+        if (regionsData.success) setRegions(regionsData.results);
+        if (citizenshipsData.success) setCitizenships(citizenshipsData.results);
+        if (socialStatusesData.success) setSocialStatuses(socialStatusesData.results);
+        if (eduGroupsData.success) setEduGroups(eduGroupsData.results);
+        if (profileData.success) {
+            setProfile(profileData.result);
+            setUserInstitutionName(profileData.result.institution?.name?.uz || "");
+        }
+    };
 
-                        school_name: response.result.school?.name?.uz || "",
-                        school_region_name: response.result.school?.region?.name || "",
-                        school_district_name: response.result.school?.district?.name || "",
-                        graduation_year: response.result.school_finished_year || "",
-                        school_certificate_serial:
-                            response.result.school_certificate_serial || "",
-                        school_certificate_number:
-                            response.result.school_certificate_number || "",
+    const loadStudentData = async () => {
+        const response = await fetchData(`students/${studentId}/`);
+        if (response?.success) {
+            const student = response.result;
+            setCitizenId(student.citizen_id);
 
-                        edu_group_name: response.result.edu_group?.name || "",
-                        admission_year: response.result.edu_group?.start_year_code || "",
-                        status: response.result.status || "",
-                    });
+            form.setFieldsValue({
+                jshshir: student.citizen.pinfl,
+                birth_date: student.citizen.birth_date ? dayjs(student.citizen.birth_date, "DD.MM.YYYY") : null,
+                passport: student.citizen.serial_number,
+                birth_cert_serial: student.citizen.birth_cert_serial,
+                birth_cert_number: student.citizen.birth_cert_number,
+                birth_cert_birth_date: student.citizen.birth_cert_birth_date ? dayjs(student.citizen.birth_cert_birth_date, "DD.MM.YYYY") : null,
 
-                    setSearchFormData({
-                        pinfl: citizen?.pinfl || "",
-                        birth_date_check: formatDateForDisplay(citizen?.birth_date) || "",
-                        passport_serial: citizen?.serial_number?.substring(0, 2) || "",
-                        passport_number: citizen?.serial_number?.substring(2) || "",
-                        birth_cert_serial: citizen?.birth_cert_serial || "",
-                        birth_cert_number: citizen?.birth_cert_number || "",
-                        birth_date_cert_check:
-                            formatDateForDisplay(citizen?.birth_date) || "",
-                    });
-                } else {
-                    setError("Talaba ma'lumotlari topilmadi yoki xato yuz berdi.");
-                }
-            } catch (err) {
-                console.error("Talaba ma'lumotlarini yuklashda xatolik:", err);
-                setError(
-                    "Ma'lumotlarni yuklashda xatolik yuz berdi: " +
-                    (err.response?.data?.error || err.message)
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
+                first_name: student.citizen.first_name,
+                last_name: student.citizen.last_name,
+                middle_name: student.citizen.middle_name,
+                gender: student.citizen.gender_id === 1 ? 'M' : 'F',
+                citizenship_type: student.citizen.citizenship_type_id,
 
-        if (studentId) {
-            fetchStudentDetails();
-            fetchRegions().then((response) => {
-                if (response) {
-                    setRegions(response);
-                }
+                permanent_region: student.citizen.permanent_region_id,
+                permanent_district: student.citizen.permanent_district_id,
+                permanent_mahalla: student.citizen.permanent_neighbourhood_id,
+
+                school_region: student.region_id,
+                school_district: student.district_id,
+                school: student.school_id,
+                school_finished_year: student.school_finished_year?.toString(),
+                school_certificate_serial: student.school_certificate_serial,
+                school_certificate_number: student.school_certificate_number,
+
+                edu_group_id: student.edu_group_id,
+                status: student.status,
+                social_status_id: student.social_status_id,
             });
-        }
-    }, [studentId]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSearchInputChange = (e) => {
-        const { name, value } = e.target;
-        setSearchFormData((prev) => ({ ...prev, [name]: value }));
-        setCheckError(null);
-    };
-
-    const handleCheckCitizen = async (type) => {
-        setCheckError(null);
-        setLoading(true);
-        try {
-            let apiUrl = "";
-            let payload = {};
-
-            if (type === "pinfl") {
-                if (!searchFormData.pinfl || !searchFormData.birth_date_check) {
-                    setCheckError("JSHSHIR va Tug'ilgan sana to'ldirilishi shart.");
-                    setLoading(false);
-                    return;
-                }
-                apiUrl = "students/info-by-pinfl/";
-                payload = {
-                    pinfl: searchFormData.pinfl,
-                    birth_date: formatDateForAPI(searchFormData.birth_date_check),
-                };
-            } else if (type === "passport") {
-                if (
-                    !searchFormData.passport_serial ||
-                    !searchFormData.passport_number ||
-                    !searchFormData.birth_date_check
-                ) {
-                    setCheckError(
-                        "Pasport seriyasi, raqami va Tug'ilgan sana to'ldirilishi shart."
-                    );
-                    setLoading(false);
-                    return;
-                }
-                apiUrl = "students/info-by-passport/";
-                payload = {
-                    serial_number:
-                        searchFormData.passport_serial + searchFormData.passport_number,
-                    birth_date: formatDateForAPI(searchFormData.birth_date_check),
-                };
-            } else if (type === "birth_certificate") {
-                if (
-                    !searchFormData.birth_cert_serial ||
-                    !searchFormData.birth_cert_number ||
-                    !searchFormData.birth_date_cert_check
-                ) {
-                    setCheckError(
-                        "Tug'ilganlik guvohnomasi seriyasi, raqami va Tug'ilgan sana to'ldirilishi shart."
-                    );
-                    setLoading(false);
-                    return;
-                }
-                apiUrl = "students/info-by-birth-certificate/";
-                payload = {
-                    serial: searchFormData.birth_cert_serial,
-                    number: searchFormData.birth_cert_number,
-                    birth_date: formatDateForAPI(searchFormData.birth_date_cert_check),
-                };
+            if (student.citizen.permanent_region_id) {
+                await onRegionChange(student.citizen.permanent_region_id);
+                await onDistrictChange(student.citizen.permanent_district_id);
             }
 
-            const response = await fetchData(apiUrl, payload);
-
-            if (response && response.success && response.result) {
-                const citizenData = response.result;
-                setFormData((prev) => ({
-                    ...prev,
-                    first_name: citizenData.first_name || "",
-                    last_name: citizenData.last_name || "",
-                    middle_name: citizenData.middle_name || "",
-                    pinfl: citizenData.pinfl || "",
-                    serial_number: citizenData.serial_number || "",
-                    birth_date: formatDateForDisplay(citizenData.birth_date) || "",
-                    birth_cert_serial: citizenData.birth_cert_serial || "",
-                    birth_cert_number: citizenData.birth_cert_number || "",
-                    citizenship_type_name: citizenData.citizenship_type?.name || "",
-                    permanent_region_name:
-                        citizenData.address_permanent?.region?.name || "",
-                    permanent_district_name:
-                        citizenData.address_permanent?.district?.name || "",
-                    permanent_mahalla_name:
-                        citizenData.address_permanent?.mahalla?.name || "",
-                }));
-                setSuccessMessage("Fuqaro ma'lumotlari muvaffaqiyatli yuklandi!");
-            } else {
-                setCheckError(
-                    "Ma'lumot topilmadi yoki xato yuz berdi: " +
-                    (response.error || "Noma’lum xato")
-                );
+            if (student.region_id) {
+                await onSchoolRegionChange(student.region_id);
             }
-        } catch (err) {
-            console.error("Fuqaro ma'lumotlarini tekshirishda xatolik:", err);
-            setCheckError(
-                "Tekshirishda xatolik yuz berdi: " +
-                (err.response?.data?.error || err.message)
-            );
-        } finally {
-            setLoading(false);
+            if (student.district_id) {
+                await onSchoolDistrictChange(student.district_id);
+            }
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setSuccessMessage(null);
 
+    const onRegionChange = async (regionId) => {
+        const districtData = await fetchData(`districts/?region_id=${regionId}`);
+        if (districtData.success) setDistricts(districtData.results);
+    };
+
+    const onDistrictChange = async (districtId) => {
+        const neighbourhoodData = await fetchData(`neighbourhoods/?district_id=${districtId}`);
+        if (neighbourhoodData.success) setNeighbourhoods(neighbourhoodData.results);
+    };
+
+    const onSchoolRegionChange = async (regionId) => {
+        const districtData = await fetchData(`districts/?region_id=${regionId}`);
+        if (districtData.success) setSchoolDistricts(districtData.results);
+    };
+
+    const onSchoolDistrictChange = async (districtId) => {
+        const regionId = form.getFieldValue("school_region");
+        if (!regionId) {
+            message.warning("Avval maktab viloyatini tanlang");
+            return;
+        }
+        const schoolsData = await fetchData(`schools/?region_id=${regionId}&district_id=${districtId}`);
+        if (schoolsData.success) setSchools(schoolsData.results);
+    };
+
+    const handleUpdateStudent = async () => {
         try {
-            const dataToUpdate = {
-                ...studentDetails,
+            const formData = form.getFieldsValue();
+            const payload = {
                 citizen: {
-                    ...studentDetails.citizen,
-                    first_name: formData.first_name,
-                    last_name: formData.last_name,
-                    middle_name: formData.middle_name,
+                    permanent_region_id: formData.permanent_region,
+                    permanent_district_id: formData.permanent_district,
+                    permanent_neighbourhood_id: formData.permanent_mahalla,
+                    citizenship_type_id: formData.citizenship_type,
                 },
-                edu_group: {
-                    ...studentDetails.edu_group,
-                    start_year_code: parseInt(formData.admission_year),
-                },
-                school_finished_year: parseInt(formData.graduation_year),
+                citizen_id: citizenId,
+                region_id: formData.permanent_region,
+                district_id: formData.permanent_district,
+                school_id: formData.school,
+                school_finished_year: Number(formData.school_finished_year),
                 school_certificate_serial: formData.school_certificate_serial,
                 school_certificate_number: formData.school_certificate_number,
+                is_finished_local_school: true,
+                social_status_id: formData.social_status_id,
+                edu_group_id: formData.edu_group_id,
                 status: formData.status,
+                first_name: formData.first_name,
+                last_name: formData.last_name,
+                middle_name: formData.middle_name,
+                gender_id: formData.gender === "M" ? 1 : 2,
+                user_institution: userInstitutionName
             };
 
-            if (dataToUpdate.institution) delete dataToUpdate.institution;
-            if (dataToUpdate.region) delete dataToUpdate.region;
-            if (dataToUpdate.district) delete dataToUpdate.district;
-            if (dataToUpdate.school) delete dataToUpdate.school;
-            if (dataToUpdate.citizen?.citizenship_type)
-                delete dataToUpdate.citizen.citizenship_type;
-            if (dataToUpdate.edu_group?.institution)
-                delete dataToUpdate.edu_group.institution;
-            if (dataToUpdate.edu_group?.curriculum)
-                delete dataToUpdate.edu_group.curriculum;
-            if (dataToUpdate.citizen?.address_permanent?.region)
-                delete dataToUpdate.citizen.address_permanent.region;
-            if (dataToUpdate.citizen?.address_permanent?.district)
-                delete dataToUpdate.citizen.address_permanent.district;
-            if (dataToUpdate.citizen?.address_permanent?.mahalla)
-                delete dataToUpdate.citizen.address_permanent.mahalla;
-
-            const response = await putData(`students/${studentId}/`, dataToUpdate);
-
-            if (response.success) {
-                setSuccessMessage("Talaba ma'lumotlari muvaffaqiyatli yangilandi!");
-                setTimeout(() => navigate(`/students/${studentId}`), 1500);
+            const response = await putData(`students/${studentId}/`, payload);
+            if (response?.success) {
+                message.success("Talaba muvaffaqiyatli yangilandi");
+                navigate("/study-process/students");
             } else {
-                setError(
-                    "Ma'lumotlarni yangilashda xatolik: " +
-                    (response.error ||
-                        JSON.stringify(response.error_message) ||
-                        "Noma’lum xato")
-                );
+                message.error("Yangilashda xatolik yuz berdi");
             }
         } catch (err) {
-            console.error("Ma'lumotlarni yangilashda xatolik:", err);
-            setError(
-                "Ma'lumotlarni yangilashda xatolik yuz berdi: " +
-                (err.response?.data?.error || err.message)
-            );
-        } finally {
-            setLoading(false);
+            console.error(err);
+            message.error("Ma'lumotlarni to‘liq kiriting");
         }
     };
+    const handleCheckCitizen = () => {
+        message.info("Tekshirish funksiyasi hali qo'shilmagan");
+    };
 
-    if (loading && !studentDetails) {
-        return <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>;
-    }
+    const handleCheckByBirthCertificate = () => {
+        message.info("Guvohnoma tekshirish hali qo'shilmagan");
+    };
 
-    if (error && !studentDetails) {
-        return <p className="text-red-600 dark:text-red-400 p-4">Xato: {error}</p>;
-    }
+
 
     return (
-        <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-                <h2 className="text-xl font-semibold mb-4 border-b pb-2 border-gray-200 dark:border-gray-700">
-                    Talaba shaxsiy ma'lumotlarini tekshirish
-                </h2>
-                {checkError && (
-                    <p className="text-red-600 text-sm mb-4">{checkError}</p>
-                )}
-                <div className="grid grid-cols-1  md:grid-cols-4 gap-4 mb-4">
-                    <div className="flex flex-col ">
-                        <label
-                            htmlFor="pinfl_check"
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            JSHSHIR
-                        </label>
-                        <div className="flex">
-                            <input
-                                type="text"
-                                id="pinfl_check"
-                                name="pinfl"
-                                value={searchFormData.pinfl}
-                                onChange={handleSearchInputChange}
-                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                maxLength="14"
-                            />
-                        </div>
-                        <div className=" flex flex-col">
-                            <label
-                                htmlFor="birth_cert_serial_check"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Tug'ilgan sana
-                            </label>
-                            <input
-                                type="text"
-                                id="birth_date_check"
-                                name="birth_date_check"
-                                value={searchFormData.birth_date_check}
-                                onChange={handleSearchInputChange}
-                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="DD.MM.YYYY"
-                            />
-                        </div>
-                    </div>
+        <div className="h-screen w-full overflow-y-auto p-4 bg-gray-100 dark:bg-gray-900 space-y-6">
+            <Card className="shadow-md">
+                <p className="text-lg mb-4 text-gray-800 dark:text-white">Talaba shaxsiy ma‘lumotlarini tekshirish</p>
+                <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <Form.Item label="JSHSHIR" name="jshshir">
+                        <Input placeholder="12345678901234" />
+                    </Form.Item>
 
-                    <div className="flex flex-col">
-                        <label
-                            htmlFor="passport_serial_check"
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Pasport seriyasi raqami
-                        </label>
-                        <div className="flex ">
-                            <input
-                                type="text"
-                                id="passport_serial_check"
-                                name="passport_serial"
-                                value={searchFormData.passport_serial}
-                                onChange={handleSearchInputChange}
-                                className="w-1/3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                maxLength="2"
-                            />
-                            <input
-                                type="text"
-                                id="passport_number_check"
-                                name="passport_number"
-                                value={searchFormData.passport_number}
-                                onChange={handleSearchInputChange}
-                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                maxLength="7"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => handleCheckCitizen("passport")}
-                                className="px-4 py-2 bg-green-500 text-white rounded-r-md hover:bg-green-600  transition duration-200 text-sm"
-                                disabled={loading}>
-                                Tekshirish
-                            </button>
-                        </div>
-                    </div>
-                    <div></div>
-                </div>
+                    <Form.Item label="Tug'ilgan sana (JSHSHIR bilan)" name="birth_date">
+                        <DatePicker format="DD.MM.YYYY" className="w-full" />
+                    </Form.Item>
 
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-                    <div className="flex flex-col">
-                        <label
-                            htmlFor="birth_cert_serial_check"
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Tug'ilganlik guvohnomasi seriyasi
-                        </label>
-                        <input
-                            type="text"
-                            id="birth_cert_serial_check"
-                            name="birth_cert_serial"
-                            value={searchFormData.birth_cert_serial}
-                            onChange={handleSearchInputChange}
-                            className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label
-                            htmlFor="birth_cert_number_check"
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Tug'ilganlik guvohnomasi raqami
-                        </label>
-                        <input
-                            type="text"
-                            id="birth_cert_number_check"
-                            name="birth_cert_number"
-                            value={searchFormData.birth_cert_number}
-                            onChange={handleSearchInputChange}
-                            className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label
-                            htmlFor="birth_date_cert_check"
-                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Tug'ilgan sana
-                        </label>
-                        <div className="flex">
-                            <input
-                                type="text"
-                                id="birth_date_cert_check"
-                                name="birth_date_cert_check"
-                                value={searchFormData.birth_date_cert_check}
-                                onChange={handleSearchInputChange}
-                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="DD.MM.YYYY"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => handleCheckCitizen("birth_certificate")}
-                                className="px-4 py-2 bg-green-500 text-white rounded-r-md hover:bg-green-600 transition duration-200 text-sm"
-                                disabled={loading}>
-                                Tekshirish
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    <Form.Item label="Pasport seriyasi va raqami" name="passport">
+                        <Input placeholder="AA1234567" />
+                    </Form.Item>
+
+                    <Form.Item label="">
+                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckCitizen}>Tekshirish</Button>
+                    </Form.Item>
+
+                    <Form.Item label="Tug'ilganlik guvohnomasi seriyasi" name="birth_cert_serial">
+                        <Input placeholder="Guvohnoma seriyasi" />
+                    </Form.Item>
+
+                    <Form.Item label="Tug'ilganlik guvohnomasi raqami" name="birth_cert_number">
+                        <Input placeholder="Guvohnoma raqami" />
+                    </Form.Item>
+
+                    <Form.Item label="Tug'ilgan sana (guvohnoma bilan)" name="birth_cert_birth_date">
+                        <DatePicker format="DD.MM.YYYY" className="w-full" />
+                    </Form.Item>
+
+                    <Form.Item label="">
+                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckByBirthCertificate}>Tekshirish</Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+            <div className="flex justify-end gap-3 mt-5">
+                <Button type="primary" onClick={handleUpdateStudent}>Saqlash</Button>
+                <Button onClick={() => navigate("/study-process/students")}>Orqaga</Button>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                <div className="flex justify-between items-center mb-4 border-b pb-4 border-gray-200 dark:border-gray-700">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                        Talaba ma'lumotlarini kiritish/tahrirlash
-                    </h2>
-                    <div className="flex space-x-2">
-                        <button
-                            onClick={() => navigate(`/study-process/students/${studentId}`)}
-                            className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-400 dark:hover:bg-gray-700 transition duration-200">
-                            Orqaga
-                        </button>
-                        <button
-                            type="submit"
-                            form="editStudentForm"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-                            disabled={loading}>
-                            {loading ? "Saqlanmoqda..." : "Saqlash"}
-                        </button>
-                    </div>
-                </div>
-                {successMessage && (
-                    <p className="text-green-600 text-sm mb-4">{successMessage}</p>
-                )}
-                {error && <p className="text-red-600 text-sm mb-4">Xato: {error}</p>}
+            <Card title="Talaba shaxsiy ma'lumotlari">
+                <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Form.Item label="Ismi" name="first_name">
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item label="Familiyasi" name="last_name">
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item label="Sharifi" name="middle_name">
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item label="Jinsi" name="gender">
+                        <Select disabled>
+                            <Option value="M">Erkak</Option>
+                            <Option value="F">Ayol</Option>
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Card>
 
-                <form id="editStudentForm" onSubmit={handleSubmit}>
-                    <h3 className="text-lg font-semibold mb-3 mt-6 border-b pb-1 border-gray-200 dark:border-gray-700">
-                        Talaba shaxsiy ma'lumotlari
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="mb-2">
-                            <label
-                                htmlFor="last_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Familiyasi
-                            </label>
-                            <input
-                                type="text"
-                                id="last_name"
-                                name="last_name"
-                                value={formData.last_name || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                required
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="first_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Ismi
-                            </label>
-                            <input
-                                type="text"
-                                id="first_name"
-                                name="first_name"
-                                value={formData.first_name || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                required
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="middle_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Otasining ismi
-                            </label>
-                            <input
-                                type="text"
-                                id="middle_name"
-                                name="middle_name"
-                                value={formData.middle_name || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                // htmlFor="citizenship_type_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Jinsi
-                            </label>
-                            <input
+            <Card title="Talabaning doimiy yashash ma'lumotlari">
+                <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Form.Item label="Viloyat" name="permanent_region">
+                        <Select onChange={onRegionChange}>
+                            {regions.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Tuman" name="permanent_district">
+                        <Select onChange={onDistrictChange}>
+                            {districts.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Mahalla" name="permanent_mahalla">
+                        <Select>
+                            {neighbourhoods.map(n => <Option key={n.id} value={n.id}>{n.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Fuqarolik turi" name="citizenship_type">
+                        <Select>
+                            {citizenships.map(c => <Option key={c.id} value={c.id}>{c.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Card>
 
-                            />
-                        </div>
-                    </div>
+            <Card title="Talabaning oldingi talimi ma'lumotlari">
+                <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Form.Item label="Maktab viloyati" name="school_region">
+                        <Select onChange={onSchoolRegionChange}>
+                            {regions.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Maktab tumani" name="school_district">
+                        <Select onChange={onSchoolDistrictChange}>
+                            {schoolDistricts.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Maktab" name="school">
+                        <Select>
+                            {schools.map(s => <Option key={s.id} value={s.id}>{s.name?.uz}</Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Bitirgan yil" name="school_finished_year">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Attestat seriyasi" name="school_certificate_serial">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Attestat raqami" name="school_certificate_number">
+                        <Input />
+                    </Form.Item>
+                </Form>
+            </Card>
 
-                    <h3 className="text-lg font-semibold mb-3 mt-6 border-b pb-1 border-gray-200 dark:border-gray-700">
-                        Talabaning doimiy yashash ma'lumotlari
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="mb-2">
-
-                            <InputSelect
-                                classes="mb-2"
-                                data={regions}
-                                label="Viloyatlar"
-                                onSelect={val => {
-                                    fetchDistricts(val.id).then(setDistricts)
-                                }} />
-                            {/* <label
-                                htmlFor="permanent_region_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Viloyat
-                            </label>
-                            <input
-                                type="text"
-                                id="permanent_region_name"
-                                name="permanent_region_name"
-                                value={formData.permanent_region_name || ""}
-                                onChange={handleInputChange}
-                                // readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-
-                            <InputSelect
-                                classes="mb-2"
-                                data={districts}
-                                label="Tuman"
-                                onSelect={val => {
-                                    fetchNeighborhood(val.id).then(setNeighbourhoods)
-                                }}
-                            />
-                            {/* <label
-                                htmlFor="permanent_district_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Tuman
-                            </label>
-                            <input
-                                type="text"
-                                id="permanent_district_name"
-                                name="permanent_district_name"
-                                value={formData.permanent_district_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-                            <InputSelect
-                                classes="mb-2"
-                                data={neighbourhoods}
-                                label="Mahalla"
-                                onSelect={val => {
-                                    console.log(val, "Mahalla");
-
-                                }}
-                            />
-
-                            {/* <label
-                                htmlFor="permanent_mahalla_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Mahalla
-                            </label>
-                            <input
-                                type="text"
-                                id="permanent_mahalla_name"
-                                name="permanent_mahalla_name"
-                                value={formData.permanent_mahalla_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="citizenship_type_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Fuqarolik
-                            </label>
-                            <input
-                                type="text"
-                                id="citizenship_type_name"
-                                name="citizenship_type_name"
-                                value={formData.citizenship_type_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            />
-                        </div>
-                    </div>
-
-                    <h3 className="text-lg font-semibold mb-3 mt-6 border-b pb-1 border-gray-200 dark:border-gray-700">
-                        Talabaning oldingi ta'limi ma'lumotlari
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-
-                        <div className="mb-2">
-                            <InputSelect
-                                classes="mb-2"
-                                data={regions}
-                                label="Viloyatlar"
-                                onSelect={val => {
-                                    fetchDistricts(val.id).then(setDistricts)
-                                }} />
-                            {/* <label
-                                htmlFor="school_region_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Maktab joylashgan viloyat
-                            </label>
-                            <input
-                                type="text"
-                                id="school_region_name"
-                                name="school_region_name"
-                                value={formData.school_region_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-                            <InputSelect
-                                classes="mb-2"
-                                data={districts}
-                                label="Tuman"
-                                onSelect={val => {
-                                    fetchNeighborhood(val.id).then(setNeighbourhoods)
-                                }}
-                            />
-                            {/* <label
-                                htmlFor="school_district_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Maktab joylashgan tuman
-                            </label>
-                            <input
-                                type="text"
-                                id="school_district_name"
-                                name="school_district_name"
-                                value={formData.school_district_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="school_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Bitirgan maktabi
-                            </label>
-                            <input
-                                type="text"
-                                id="school_name"
-                                name="school_name"
-                                value={formData.school_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="graduation_year"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Maktabni bitirgan yil
-                            </label>
-                            <input
-                                type="number"
-                                id="graduation_year"
-                                name="graduation_year"
-                                value={formData.graduation_year || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                min="1900"
-                                max={new Date().getFullYear() + 5}
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-2">
-                            <label
-                                htmlFor="school_certificate_serial"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Maktab attestati seriyasi
-                            </label>
-                            <input
-                                type="text"
-                                id="school_certificate_serial"
-                                name="school_certificate_serial"
-                                value={formData.school_certificate_serial || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label
-                                htmlFor="school_certificate_number"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Maktab attestati raqami
-                            </label>
-                            <input
-                                type="text"
-                                id="school_certificate_number"
-                                name="school_certificate_number"
-                                value={formData.school_certificate_number || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
-                        </div>
-                    </div>
-
-                    <h3 className="text-lg font-semibold mb-3 mt-6 border-b pb-1 border-gray-200 dark:border-gray-700">
-                        Talabaning hozirgi ta'limi ma'lumotlari
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="mb-2">
-                            <label
-                                htmlFor="edu_group_name"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Guruh nomi
-                            </label>
-                            <input
-                                type="text"
-                                id="edu_group_name"
-                                name="edu_group_name"
-                                value={formData.edu_group_name || ""}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            />
-                        </div>
-
-                        <div className="mb-2">
-                            <label
-                                htmlFor="admission_year"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                O'qishga kirgan yili
-                            </label>
-                            <input
-                                type="number"
-                                id="admission_year"
-                                name="admission_year"
-                                value={formData.admission_year || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                min="1900"
-                                max={new Date().getFullYear() + 5}
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-2">
-                            <label
-                                htmlFor="status"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Talaba holati
-                            </label>
-                            <select
-                                id="status"
-                                name="status"
-                                value={formData.status || ""}
-                                onChange={handleInputChange}
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                required>
-                                <option value="ACTIVE">O'qimoqda</option>
-                                <option value="ON_LEAVE">Akademik ta'tilda</option>
-                                <option value="WITHDRAWN">O'qishdan chetlatilgan</option>
-                                <option value="FINISHED">Bitirgan</option>
-                            </select>
-                        </div>
-
-                        <div className="mb-2">
-                            <label
-                                htmlFor="edu_type_dummy"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Ta'lim turi (Misol)
-                            </label>
-                            <input
-                                type="text"
-                                id="edu_type_dummy"
-                                name="edu_type_dummy"
-                                value={"Kunduzgi"}
-                                readOnly
-                                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed sm:text-sm"
-                            />
-                        </div>
-                    </div>
-                </form>
-            </div>
+            <Card title="Talabaning hozirgi talimi ma'lumotlari">
+                <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Form.Item label="Hozirda ta'lim olayotgan litsey">
+                        <Input value={profile?.institution?.name?.uz || ''} disabled />
+                    </Form.Item>
+                    <Form.Item label="Ta'lim guruhi" name="edu_group_id">
+                        <Select>
+                            {eduGroups.map(group => (
+                                <Option key={group.id} value={group.id}>{group.name}</Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Holati" name="status">
+                        <Select>
+                            <Option value="ACTIVE">O'qimoqda</Option>
+                            <Option value="INACTIVE">Bitirgan</Option>
+                            <Option value="GRADUATED">Chetlashgan</Option>
+                            <Option value="EXPELLED">Akademik ta'til</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Ijtimoiy holati" name="social_status_id">
+                        <Select>
+                            {socialStatuses.map(status => (
+                                <Option key={status.id} value={status.id}>{status.name}</Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Card>
+            <br /> <br />
         </div>
     );
 };

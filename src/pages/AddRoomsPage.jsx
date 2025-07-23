@@ -46,7 +46,7 @@ const AddRoomsPage = () => {
                     building: response.result.building?.id,
                     capacity: response.result.capacity,
                     floor_number: response.result.storey,
-                    description: response.result?.building?.description || ''
+                    description: response.result?.description || ''
                 });
             } else {
                 message.error("Xona ma'lumotini yuklashda xatolik: " + (response.error || 'Nomaʼlum xato'));
@@ -77,7 +77,7 @@ const AddRoomsPage = () => {
                 building_id: values.building,
                 capacity: values.capacity,
                 storey: values.floor_number,
-                description: values.description
+                description: values.description,
             };
 
             let response;

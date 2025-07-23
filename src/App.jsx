@@ -31,6 +31,7 @@ import GraduatesPage from './pages/GraduatesPage';
 import ClassHoursPage from './pages/ClassHoursPage';
 import BuildingsPage from './pages/BuildingsPage';
 import AddBuildingsPage from './pages/AddBuildingsPage';
+import EditBuildingsPage from './pages/ EditBuildingsPage';
 import RoomsPage from './pages/RoomsPage';
 import AddRoomsPage from './pages/AddRoomsPage';
 import ReportsTeachersPage from './pages/ReportsTeachersPage';
@@ -90,6 +91,7 @@ function App() {
               <Route path="/study-process/lesson-hours" element={<ClassHoursPage />} />
 
               <Route path="/tm-info" element={<TmInfoHomePage />} />
+              <Route path="/tm-info/buildings/:buildingId/edit" element={<EditBuildingsPage />} />
               <Route path="/tm-info/buildings/add" element={<AddBuildingsPage />} />
               <Route path="/tm-info/buildings" element={<BuildingsPage />} />
               <Route path="/tm-info/rooms/add" element={<AddRoomsPage />} />

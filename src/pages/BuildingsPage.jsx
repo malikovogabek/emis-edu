@@ -155,9 +155,10 @@ const BuildingsPage = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{building.storeys || 'N/A'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button
-                                            onClick={() => navigate('/tm-info/buildings/add', { state: { building } })}
+                                            onClick={() => navigate(`/tm-info/buildings/${building.id}/edit`, { state: { building } })}
                                             className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-2">
-                                            Tahrirlash</button>
+                                            Tahrirlash
+                                        </button>
                                         <button onClick={() => handleDeleteBuilding(building.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">O'chirish</button>
                                     </td>
                                 </tr>

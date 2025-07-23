@@ -14,7 +14,9 @@ const AddRoomsPage = () => {
     const navigate = useNavigate();
     const { roomId } = useParams();
 
+
     const isEditing = !!roomId;
+
 
     const loadBuildingsList = useCallback(async () => {
         setBuildingsLoading(true);
@@ -38,13 +40,13 @@ const AddRoomsPage = () => {
         setLoading(true);
         try {
             const response = await fetchData(`rooms/${roomId}/`);
-            if (response.success && response.results) {
+            if (response.success && response.result) {
                 form.setFieldsValue({
-                    room_name: response.results.name,
-                    building: response.results.building?.id,
-                    capacity: response.results.capacity,
-                    floor_number: response.results.storey,
-                    description: response.results.description || ''
+                    room_name: response.result.name,
+                    building: response.result.building?.id,
+                    capacity: response.result.capacity,
+                    floor_number: response.result.storey,
+                    description: response.result?.building?.description || ''
                 });
             } else {
                 message.error("Xona ma'lumotini yuklashda xatolik: " + (response.error || 'Nomaʼlum xato'));

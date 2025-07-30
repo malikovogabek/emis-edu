@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchData, deleteData } from '../api/api';
+import { fetchData } from '../api/api';
 import Loader from "../components/Loader";
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
 const ReportsTeachersPage = () => {
     const [teachers, setTeachers] = useState([]);
@@ -13,7 +13,7 @@ const ReportsTeachersPage = () => {
     const [totalCount, setTotalCount] = useState(0);
 
     const [searchQuery, setSearchQuery] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const loadPageData = useCallback(async () => {
         setLoading(true);
@@ -94,26 +94,26 @@ const ReportsTeachersPage = () => {
     }, [loadPageData]);
 
 
-    const handleDeleteTeacher = async (teacherId) => {
-        if (!window.confirm("Haqiqatan ham ushbu o'qituvchini o'chirmoqchimisiz?")) return;
-        setLoading(true);
-        setError(null);
-        setPostSuccess(null);
-        try {
-            const response = await deleteData(`users/profile/${teacherId}/`);
-            if (response.success && (response.status === 204 || response.status === 200)) {
-                setPostSuccess("O'qituvchi muvaffaqiyatli o'chirildi!");
-                loadPageData();
-            } else {
-                throw new Error(response.error || 'O‘chirishda nomaʼlum xatolik');
-            }
-        } catch (err) {
-            console.error("O'qituvchini o'chirishda xatolik:", err);
-            setError("O'qituvchini o'chirishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const handleDeleteTeacher = async (teacherId) => {
+    //     if (!window.confirm("Haqiqatan ham ushbu o'qituvchini o'chirmoqchimisiz?")) return;
+    //     setLoading(true);
+    //     setError(null);
+    //     setPostSuccess(null);
+    //     try {
+    //         const response = await deleteData(`users/profile/${teacherId}/`);
+    //         if (response.success && (response.status === 204 || response.status === 200)) {
+    //             setPostSuccess("O'qituvchi muvaffaqiyatli o'chirildi!");
+    //             loadPageData();
+    //         } else {
+    //             throw new Error(response.error || 'O‘chirishda nomaʼlum xatolik');
+    //         }
+    //     } catch (err) {
+    //         console.error("O'qituvchini o'chirishda xatolik:", err);
+    //         setError("O'qituvchini o'chirishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
 
     const handlePageChange = (pageNumber) => {
@@ -143,7 +143,7 @@ const ReportsTeachersPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">O'qituvchilar Ro'yxati (Reportlar)</h1>
+            <p className="text-2xl font-bold mb-4">O'qituvchilar </p>
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
@@ -154,14 +154,14 @@ const ReportsTeachersPage = () => {
                         className="py-2 px-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
                     />
                 </div>
-                <div>
+                {/* <div>
                     <button
                         onClick={() => navigate('/reports/teachers/add')}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
                         + Yangi kiritish
                     </button>
-                </div>
+                </div> */}
             </div>
 
             {postSuccess && <p className="text-green-600 mb-4">{postSuccess}</p>}
@@ -181,7 +181,7 @@ const ReportsTeachersPage = () => {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Otasining ismi</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Telefon raqami</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pasport</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amallar</th>
+
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -195,7 +195,7 @@ const ReportsTeachersPage = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{teacher.passport_serial_number || 'N/A'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 
-                                        <button onClick={() => handleDeleteTeacher(teacher.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">O'chirish</button>
+                                        {/* <button onClick={() => handleDeleteTeacher(teacher.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">O'chirish</button> */}
                                     </td>
                                 </tr>
                             ))}

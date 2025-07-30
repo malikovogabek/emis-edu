@@ -21,6 +21,7 @@ import TeachersPage from './pages/TeachersPage';
 import AddTeacherPage from './pages/AddTeacherPage';
 import CurriculumsPage from './pages/CurriculumsPage';
 import CurriculumDetailsPage from './pages/CurriculumDetailsPage';
+import CurriculumSubjectDistributionPage from './pages/CurriculumSubjectDistributionPage';
 import CurriculumEditPage from './pages/CurriculumEditPage';
 import AddCurriculumPage from './pages/AddCurriculumPage';
 import StudentsPage from './pages/StudentsPage';
@@ -35,7 +36,7 @@ import EditBuildingsPage from './pages/ EditBuildingsPage';
 import RoomsPage from './pages/RoomsPage';
 import AddRoomsPage from './pages/AddRoomsPage';
 import ReportsTeachersPage from './pages/ReportsTeachersPage';
-import AddReportsTeachersPage from './pages/AddReportsTeachersPage';
+
 
 
 
@@ -76,6 +77,7 @@ function App() {
               <Route path="/study-process/plans/add" element={<AddCurriculumPage />} />
               <Route path="/study-process/plans" element={<CurriculumsPage />} />
               <Route path="/study-process/plans/details/:id" element={<CurriculumDetailsPage />} />
+              <Route path="/study-process/plans/details/:id/distribute-subjects" element={<CurriculumSubjectDistributionPage />} />
               <Route path="/study-process/plans/details/:id/edit" element={<CurriculumEditPage />} />
               <Route path="/study-process/groups/add" element={<AddStudyGroupPage />} />
               <Route path="/study-process/groups" element={<StudyGroupsPage />} />
@@ -101,7 +103,7 @@ function App() {
 
               <Route path="/reports" element={<ReportsHomePage />} />
               <Route path="/reports/teachers" element={<ReportsTeachersPage />} />
-              <Route path="/reports/teachers/add" element={<AddReportsTeachersPage />} />
+
 
               <Route path="*" element={<p className="p-6 text-xl text-red-500">Sahifa topilmadi (404)</p>} />
             </Routes>

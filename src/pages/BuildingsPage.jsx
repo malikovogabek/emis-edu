@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { fetchData, deleteData } from '../api/api';
 import Loader from "../components/Loader";
 import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const BuildingsPage = () => {
     const [buildings, setBuildings] = useState([]);
@@ -62,20 +63,23 @@ const BuildingsPage = () => {
             return;
         }
         setLoading(true);
-        setError(null);
-        setPostSuccess(null);
+
+
         try {
             const response = await deleteData(`buildings/${buildingId}/`);
             if (response.success && (response.status === 204 || response.status === 200)) {
-                setPostSuccess("Bino korpusi muvaffaqiyatli o'chirildi!");
+                message.success("Bino korpusi muvaffaqiyatli o'chirildi!");
                 loadPageData();
             } else {
-                throw new Error(response.error || "Noma’lum xatolik yuz berdi.");
+                if (response.error && response.error.code === "BAD_REQUEST" && response.error.messages) {
+                    message.error(response.error.messages);
+                } else {
+                    message.error(response.error?.message || "Noma’lum xatolik yuz berdi.");
+                }
             }
-
         } catch (err) {
             console.error("Bino korpusini o'chirishda xatolik:", err);
-            setError("Bino korpusini o'chirishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
+            message.error("Bino korpusini o'chirishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }

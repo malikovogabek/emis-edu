@@ -68,33 +68,52 @@ const ClassHoursPage = () => {
             alert("Muassasa ID'si mavjud emas. Ma'lumot qo'shib bo'lmaydi.");
             return;
         }
+
         setLoading(true);
         setError(null);
+
         try {
-            const response = await postData(`institutions/${institutionId}/class-hours/`, newHourData);
-            if (response && response.success) {
-                alert("Dars soati muvaffaqiyatli qo'shildi!");
-                setIsModalOpen(false);
-                loadClassHours();
-            } else {
-                alert("Dars soatini qo'shishda xatolik yuz berdi: " + (response.error || "Noma'lum xato"));
+            for (const lesson of newHourData) {
+                const payload = {
+                    pair_number: lesson.para,
+                    begin_time: lesson.start_time,
+                    end_time: lesson.end_time,
+                };
+                const response = await postData(`institutions/${institutionId}/class-hours/`, payload);
+                if (!response.success) {
+                    let errorMessage = "Yuborishda xatolik";
+                    if (response.error && response.error.error && response.error.error.messages) {
+                        errorMessage = response.error.error.messages;
+                    } else if (response.error && response.error.messages) {
+                        errorMessage = response.error.messages;
+                    } else if (typeof response.error === 'string') {
+                        errorMessage = response.error;
+                    }
+                    throw new Error(errorMessage);
+                }
             }
+
+            alert("Barcha dars soatlari muvaffaqiyatli qo'shildi!");
+            setIsModalOpen(false);
+            loadClassHours();
         } catch (err) {
-            console.error("Dars soatini qo'shishda xatolik:", err);
-            alert("Dars soatini qo'shishda server xatoligi: " + (err.response?.data?.error || err.message));
+            console.error("POST xatolik catch blokida:", err);
+            alert("Dars soatini qo‘shishda xatolik: " + err.message);
         } finally {
             setLoading(false);
         }
     };
+
 
     const renderTableContent = () => {
         if (classHours.length > 0) {
             return (
                 classHours.map((hour, index) => (
                     <tr key={hour.id || index}>
-
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {hour.pair_number !== undefined && hour.pair_number !== null ? hour.pair_number : 'N/A'}
+                        <td>
+                            {typeof hour.pair_number === 'number' && hour.pair_number >= 0
+                                ? hour.pair_number + 1
+                                : index + 1}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{hour.begin_time || 'N/A'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{hour.end_time || 'N/A'}</td>
@@ -153,6 +172,7 @@ const ClassHoursPage = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddClassHour}
+                existingClassHours={classHours}
             />
         </div>
     );

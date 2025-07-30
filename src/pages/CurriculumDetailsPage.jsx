@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchData } from '../api/api';
+import { fetchData, postData } from '../api/api';
 import Loader from '../components/Loader';
+import { message } from 'antd';
 
 const CurriculumDetailsPage = () => {
     const { id } = useParams();
@@ -33,6 +34,41 @@ const CurriculumDetailsPage = () => {
     useEffect(() => {
         loadCurriculumDetails();
     }, [loadCurriculumDetails]);
+
+    const handleDeclineCurriculum = async () => {
+        setLoading(true);
+        try {
+            const response = await postData(`curriculums/${id}/cancel/`, { status: 'ACTIVE' }, 'PATCH');
+            if (response.success) {
+                message.success("O'quv reja bekor qilindi va status ACTIVE ga o'zgartirildi!");
+                loadCurriculumDetails();
+            } else {
+                message.error("O'quv rejani bekor qilishda xatolik yuz berdi: " + (response.error || "Noma'lum xato"));
+            }
+        } catch (err) {
+            console.error("O'quv rejani bekor qilishda xatolik:", err);
+            message.error("O'quv rejani bekor qilishda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
+        } finally {
+            setLoading(false);
+        }
+    };
+    const handleApproveCurriculum = async () => {
+        setLoading(true);
+        try {
+            const response = await postData(`curriculums/${id}/approve/`);
+            if (response.success) {
+                message.success("O'quv reja tasdiqlandi!");
+                loadCurriculumDetails();
+            } else {
+                message.error("O'quv rejani tasdiqlashda xatolik yuz berdi: " + (response.error || "Noma'lum xato"));
+            }
+        } catch (err) {
+            console.error("O'quv rejani tasdiqlashda xatolik:", err);
+            message.error("O'quv rejani tasdiqlashda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return <div className="fixed inset-0 flex justify-center items-center"> <Loader /> </div>;
@@ -68,7 +104,8 @@ const CurriculumDetailsPage = () => {
     const getUzName = (obj) => {
         return obj && obj.uz ? obj.uz : 'N/A';
     };
-
+    const showActionButtons = curriculumDetails.status === 'ACTIVE';
+    const showApprovedButtons = curriculumDetails.status === "APPROVED";
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100 max-h-screen overflow-y-auto">
             <div className='p-3 '>
@@ -77,6 +114,28 @@ const CurriculumDetailsPage = () => {
                     className='px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition duration-200 mr-2'>
                     Tahrirlash
                 </button>
+                {showActionButtons && (
+                    <>
+                        <button
+                            onClick={() => navigate(`/study-process/plans/details/${id}/distribute-subjects`)}
+                            className='px-4 py-2 bg-amber-400 text-white text-sm rounded-md hover:bg-amber-300 transition duration-200 mr-2'>
+                            O'quv reja fanlarini taqsimlash
+                        </button>
+                        <button
+                            onClick={handleApproveCurriculum}
+                            className='px-4 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-400 transition duration-200 mr-2'>
+                            O'quv rejani tasdiqlash
+                        </button>
+                    </>
+                )}
+                {showApprovedButtons && (
+                    <button
+                        onClick={handleDeclineCurriculum}
+                        className='px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-500 transition duration-200 mr-2'>
+                        O'quv rejani bekor qilish
+                    </button>
+                )}
+
                 <button
                     onClick={() => navigate('/study-process/plans')}
                     className="px-4 py-2 bg-white text-red-600 text-sm rounded-md  transition duration-200"

@@ -1,107 +1,156 @@
-import React, { useEffect, useState } from 'react';
-import { fetchData } from '../api/api';
-import Loader from "../components/Loader";
+import React, { useEffect, useState } from "react";
+import { Table, Select, Input, Button, Space, Card } from "antd";
+import { fetchData } from "../api/api";
+const { Option } = Select;
 
 const GraduatesPage = () => {
-    const [graduates, setGraduates] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [groups, setGroups] = useState([]);
+    const [filteredGroups, setFilteredGroups] = useState([]);
+    const [directions, setDirections] = useState([]);
+    const [curriculums, setCurriculums] = useState([]);
+    const [search, setSearch] = useState({
+        name: "",
+        direction_id: "",
+        curriculum_id: ""
+    });
+
 
     useEffect(() => {
-        const loadGraduates = async () => {
-            try {
-                const responseData = await fetchData(`edu-groups/?status=GRADUATE`);
-
-                if (responseData && responseData.success) {
-                    const dataToSet = responseData.result || responseData.results;
-                    if (Array.isArray(dataToSet)) {
-                        setGraduates(dataToSet);
-                    } else if (dataToSet === null) {
-                        setGraduates([]);
-                        console.warn("Bitiruvchilar ma'lumoti topilmadi (result/results: null):", responseData);
-                    } else {
-                        setError("API dan kutilgan ma'lumot formati kelmadi (Array emas): " + JSON.stringify(responseData));
-                        setGraduates([]);
-                        console.error("API dan kutilgan ma'lumot formati kelmadi (Array emas):", responseData);
-                    }
-                } else {
-                    setError("API dan kutilgan ma'lumot formati kelmadi yoki xato: " + JSON.stringify(responseData));
-                    setGraduates([]);
-                    console.error("API dan kutilgan ma'lumot formati kelmadi yoki xato:", responseData);
-                }
-            } catch (err) {
-                console.error("Bitiruvchilarni yuklashda xatolik:", err);
-                setError("Bitiruvchilarni yuklashda xatolik yuz berdi: " + (err.response?.data?.error || err.message));
-                setGraduates([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadGraduates();
+        getInitialData();
     }, []);
 
+    const getInitialData = async () => {
+        try {
+            const [groupRes, dirRes, curRes] = await Promise.all([
+                fetchData(`/edu-groups/?status=GRADUATED&page=1&limit=1000`),
+                fetchData(`/edu-directions/?page=1&limit=10000`),
+                fetchData(`/curriculums/?page=1&limit=10000`),
+            ]);
 
-
-
-    const renderTableContent = () => {
-        if (graduates.length > 0) {
-            return (
-                graduates.map((graduate, index) => (
-                    <tr key={graduate.id || index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{index + 1}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.curriculum?.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.edu_direction?.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.course || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.semester || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.academic_year || graduate.start_year?.name || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{graduate.status || 'N/A'}</td>
-                    </tr>
-                ))
-            );
-        } else {
-            return (
-                <tr>
-                    <td colSpan="8" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
-                        <div className="flex flex-col items-center justify-center py-8">
-                            <img src="/src/assets/no_data_icon.svg" alt="Ma'lumot topilmadi" className="w-16 h-16 mb-2 dark:filter dark:invert" />
-                            <p>Ma'lumot topilmadi</p>
-                        </div>
-                    </td>
-                </tr>
-            );
+            setGroups(groupRes?.results || []);
+            setFilteredGroups(groupRes?.results || []);
+            setDirections(dirRes?.results || []);
+            setCurriculums(curRes?.results || []);
+        } catch (error) {
+            console.error("Ma'lumotlarni yuklashda xatolik:", error);
         }
     };
+    const handleFilter = () => {
+        let filtered = [...groups];
+
+        if (search.name) {
+            filtered = filtered.filter(group =>
+                group.name?.toLowerCase().includes(search.name.toLowerCase())
+            );
+        }
+
+        if (search.direction_id) {
+            filtered = filtered.filter(group => group.direction?.id === search.direction_id);
+        }
+
+        if (search.curriculum_id) {
+            filtered = filtered.filter(group => group.curriculum?.id === search.curriculum_id);
+        }
+
+        setFilteredGroups(filtered);
+    };
+
+    const handleReset = () => {
+        setSearch({
+            name: "",
+            direction_id: "",
+            curriculum_id: "",
+        });
+        setFilteredGroups(groups);
+    };
+
+
+    const columns = [
+        {
+            title: "Guruh nomi",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "O'quv rejasi",
+            dataIndex: ["curriculum", "name"],
+            key: "curriculum",
+        },
+        {
+            title: "O'quv yo'nalishi",
+            dataIndex: ["direction", "name"],
+            key: "direction",
+        },
+        {
+            title: "Kurs",
+            dataIndex: "course",
+            key: "course",
+        },
+        {
+            title: "Semestr",
+            dataIndex: "semester",
+            key: "semester",
+        },
+        {
+            title: "Ochilgan O‘quv Yili",
+            dataIndex: ["year", "name"],
+            key: "year",
+        },
+        {
+            title: "Status",
+            dataIndex: ["status", "name"],
+            key: "status",
+        },
+    ];
 
     return (
-        <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 overflow-y-auto dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Bitiruvchilar</h1>
-            {loading ? (
-                <Loader />
-            ) : error ? (
-                <p className="text-red-600 dark:text-red-400">Xato: {error}</p>
-            ) : (
-                <div className="bg-white dark:bg-gray-800  p-6 rounded-lg overflow-y-auto shadow-md ">
-                    <table className="min-w-full divide-y divide-gray-200  dark:divide-gray-700">
-                        <thead className="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Guruh nomi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">O'quv reja</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">O'quv yo'nalishi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kurs</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Semestr</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ochiligan O'quv Yili</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {renderTableContent()}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+        <div className="w-full p-4 bg-gray-50 min-h-screen">
+            <Card title="Bitirgan guruhlar">
+                <Space style={{ marginBottom: 16 }} wrap>
+                    <Input
+                        placeholder="Guruh nomi"
+                        value={search.name}
+                        onChange={(e) => setSearch({ ...search, name: e.target.value })}
+                    />
+                    <Select
+                        placeholder="Yo'nalishni tanlang"
+                        style={{ width: 200 }}
+                        allowClear
+                        value={search.direction_id}
+                        onChange={(value) => setSearch({ ...search, direction_id: value })}
+                    >
+                        {directions.map((dir) => (
+                            <Option key={dir.id} value={dir.id}>
+                                {dir.name}
+                            </Option>
+                        ))}
+                    </Select>
+                    <Select
+                        placeholder="O‘quv rejasi"
+                        style={{ width: 200 }}
+                        allowClear
+                        value={search.curriculum_id}
+                        onChange={(value) => setSearch({ ...search, curriculum_id: value })}
+                    >
+                        {curriculums.map((cur) => (
+                            <Option key={cur.id} value={cur.id}>
+                                {cur.name}
+                            </Option>
+                        ))}
+                    </Select>
+                    <Button type="primary" onClick={handleFilter}>
+                        Qidirish
+                    </Button>
+                    <Button onClick={handleReset}>Tozalash</Button>
+                </Space>
+
+                <Table
+                    rowKey="id"
+                    columns={columns}
+                    dataSource={filteredGroups}
+                    pagination={{ pageSize: 10 }}
+                />
+            </Card>
         </div>
     );
 };

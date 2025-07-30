@@ -33,8 +33,9 @@ const EditBuildingsPage = () => {
                     name: data.name,
                     description: data.description,
                     region: data.region?.id,
-                    district: data.district?.name,
-                    floor_count: data.storeys
+                    district_id: data.district?.id,
+                    floor_count: data.storeys,
+                    location: data.location,
                 });
 
                 if (data.region?.id) handleRegionChange(data.region.id);
@@ -62,9 +63,9 @@ const EditBuildingsPage = () => {
                 name: values.name,
                 description: values.description,
                 region_id: values.region,
-                district_id: values.district,
+                district_id: values.district_id,
                 storeys: values.floor_count,
-                location: { lat: 0, lon: 0 }
+                location: values.location,
             };
 
             const response = await putData(`buildings/${buildingId}/`, payload);
@@ -116,7 +117,7 @@ const EditBuildingsPage = () => {
 
                     <Form.Item
                         label="Tuman"
-                        name="district"
+                        name="district_id"
                         rules={[{ required: true, message: 'Tumanni tanlang' }]}
                     >
                         <Select>
@@ -140,6 +141,13 @@ const EditBuildingsPage = () => {
                         rules={[{ required: true, message: 'Qavat sonini kiriting' }]}
                     >
                         <InputNumber min={1} className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Manzil (Location)"
+                        name="location"
+                        rules={[{ required: true, message: "Manzilni kiriting" }]}
+                    >
+                        <Input />
                     </Form.Item>
 
                     <Form.Item className="flex justify-end space-x-2">

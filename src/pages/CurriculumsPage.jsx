@@ -64,6 +64,16 @@ const CurriculumsPage = () => {
             setCurrentPage(pageNumber);
         }
     };
+    const getStatusDisplay = (status) => {
+        switch (status) {
+            case "APPROVED":
+                return { text: "Tasdiqlangan", className: "bg-blue-100 text-blue-500 hover:bg-blue-200" };
+            case "ACTIVE":
+                return { text: "ACTIVE", className: "bg-green-100 text-green-500 hover:bg-green-200" };
+            default:
+                return { text: "Noma'lum", className: "bg-gray-300 text-gray-700 hover:bg-gray-400" };
+        }
+    };
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
@@ -107,27 +117,30 @@ const CurriculumsPage = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {currentItems.map((curriculum, index) => (
-                                <tr key={curriculum.id}
-                                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
-                                    onClick={() => handleViewDetailsClick(curriculum.id)}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {(currentPage - 1) * itemsPerPage + index + 1}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.name || 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.edu_direction ? curriculum.edu_direction.name : 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.start_year ? curriculum.start_year.name : 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.curriculum_template ? curriculum.curriculum_template.number_of_semesters : 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <span
-                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-500 cursor-pointer hover:bg-blue-200"
+                            {currentItems.map((curriculum, index) => {
 
-                                        >
-                                            Tastiqlangan
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
+                                const statusInfo = getStatusDisplay(curriculum.status); // 'status' o'rniga sizning API dagi maydon nomi
+                                return (
+                                    <tr key={curriculum.id}
+                                        className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+                                        onClick={() => handleViewDetailsClick(curriculum.id)}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                                            {(currentPage - 1) * itemsPerPage + index + 1}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.name || 'N/A'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.edu_direction ? curriculum.edu_direction.name : 'N/A'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.start_year ? curriculum.start_year.name : 'N/A'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculum.curriculum_template ? curriculum.curriculum_template.number_of_semesters : 'N/A'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <span
+                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.className} cursor-pointer`}
+                                            >
+                                                {statusInfo.text}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
 

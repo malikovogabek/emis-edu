@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchData } from '../api/api';
 import Loader from "../components/Loader";
 import { nextCursApiService, prevCursApiService, toFinishGroupApiService } from '../service/study';
+import { useTranslation } from 'react-i18next';
 
 const GroupDetailsPage = () => {
     const { id } = useParams();
@@ -15,6 +16,8 @@ const GroupDetailsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('students');
+    const { t } = useTranslation();
+
 
     const loadGroupDetails = useCallback(async () => {
         setLoading(true);
@@ -136,51 +139,51 @@ const GroupDetailsPage = () => {
                         <button
                             onClick={handleEditGroup}
                             className="px-4 py-2 bg-blue-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-blue-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                            Tahrirlash
+                            {t("editButton")}
 
                         </button>
                     )}
                     <button
                         onClick={handleOpenLessonDistributionPage}
                         className="px-4 py-2 bg-cyan-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-cyan-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                        Joriy semester uchun o'quv soatlari taqsimoti
+                        {t("distributeLessonHours")}
                     </button>
                     <button
                         onClick={handleNavigateToRatingsPage}
                         className="px-4 py-2 bg-green-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-green-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                        Guruhdagi talabalarning baholarini kiritish
+                        {t("enterStudentRatings")}
                     </button>
                     {currentSemester > 1 && (
                         <button
                             onClick={handlePrevGroups}
                             className="px-4 py-2 bg-red-600 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-red-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                            Avvalgi semisterga qaytarish
+                            {t("revertToPreviousSemester")}
                         </button>
                     )}
                     {currentSemester === 4 && (
                         <button
                             onClick={handleFinishGroup}
                             className="px-4 py-2 bg-cyan-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-cyan-400 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                            Guruhni bitirish
+                            {t("finishGroup")}
                         </button>
                     )}
                     {currentSemester !== 4 && (
                         <button onClick={handleNextGroups} className="px-4 py-2 bg-amber-400 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-amber-300 dark:hover:bg-gray-600 transition duration-200 text-sm">
-                            Keyingi semestrga o'tkazish
+                            {t("moveToNextSemester")}
                         </button>
                     )}
                     {currentSemester === 1 && (
                         <button
                             onClick={() => navigate(`/study-process/students/add`)}
                             className="px-4 py-2 bg-fuchsia-500 dark:bg-gray-700 text-gray-50 dark:text-gray-200 rounded-md hover:bg-fuchsia-400 dark:hover:bg-gray-600 transition duration-200 text-sm" >
-                            Talaba qoshish
+                            {t("addStudent")}
                         </button>
                     )}
                     <button
                         onClick={() => navigate('/study-process/groups')}
                         className="px-4 py-2 bg-white text-red-600 text-sm rounded-md  transition duration-200"
                     >
-                        Ortga
+                        {t("backButton")}
                     </button>
                 </div>
             </div>
@@ -194,28 +197,28 @@ const GroupDetailsPage = () => {
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{groupIdDisplay}</td>
                             </tr>
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruh Nomi</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("groupName")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{groupName}</td>
                             </tr>
 
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Ochilgan O'quv Yili</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("openedAcademicYear")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{currentAcademicYear}</td>
                             </tr>
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruhga kiritilishi kerak bo'lgan talabalar soni</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("groupnamber")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{studentCount}</td>
                             </tr>
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">O'quv reja</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("curriculum")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{curriculumName}</td>
                             </tr>
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Guruhning joriy semestri</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("currentSemester")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{currentSemester}</td>
                             </tr>
                             <tr>
-                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">Status</td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">{t("status")}</td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm">
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status === 'Aktiv' ? 'bg-green-100 text-green-500' : 'bg-green-100 text-green-500'}`}>
                                         {status}
@@ -232,25 +235,25 @@ const GroupDetailsPage = () => {
                     className={`px-4 py-2 text-sm font-medium ${activeTab === 'students' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
                     onClick={() => setActiveTab('students')}
                 >
-                    Guruh o'quvchilari
+                    {t("students")}
                 </button>
                 <button
                     className={`px-4 py-2 text-sm font-medium ${activeTab === 'schedule' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
                     onClick={() => setActiveTab('schedule')}
                 >
-                    Dars jadvali
+                    {t("schedule")}
                 </button>
                 <button
                     className={`px-4 py-2 text-sm font-medium ${activeTab === 'grouping' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
                     onClick={() => setActiveTab('grouping')}
                 >
-                    Guruhlash
+                    {t("grouping")}
                 </button>
                 <button
                     className={`px-4 py-2 text-sm font-medium ${activeTab === 'control' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
                     onClick={() => setActiveTab('control')}
                 >
-                    Nazorat
+                    {t("control")}
                 </button>
             </div>
 
@@ -261,12 +264,12 @@ const GroupDetailsPage = () => {
                             <thead className="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Talaba</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">PINFL</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ta'lim Olgan Maktabi</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Attestat Seriya Raqami</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Maktabdan O'qigan Fanlari Soni Va Ballari</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amallar</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("student")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("pinfl")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("graduatedSchool")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("diplomaSerialNumber")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("schoolSubjectsAndScores")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("actions")}</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -301,24 +304,24 @@ const GroupDetailsPage = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <p className="text-gray-500 dark:text-gray-400">Bu guruhda hozircha talabalar yo'q.</p>
+                        <p className="text-gray-500 dark:text-gray-400">{t("noStudents")}</p>
                     )}
                 </div>
             )}
 
             {activeTab === 'schedule' && (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                    Dars jadvali ma'lumotlari bu yerda ko'rsatiladi.
+                    {t("schedulePlaceholder")}
                 </div>
             )}
             {activeTab === 'grouping' && (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                    <h2 className=' text-xl'>Bu guruxda bulinuvchi fanlar mavjud emas.</h2>
+                    <h2 className=' text-xl'>{t("noDivisibleSubjects")}</h2>
                 </div>
             )}
             {activeTab === 'control' && (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                    Nazorat ma'lumotlari bu yerda ko'rsatiladi.
+                    {t("controlPlaceholder")}
                 </div>
             )}
         </div>

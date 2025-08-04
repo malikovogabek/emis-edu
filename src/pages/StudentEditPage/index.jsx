@@ -3,6 +3,8 @@ import { Form, Input, Select, Button, DatePicker, Card, message } from "antd";
 import { fetchData, putData } from "../../api/api";
 import { useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { useTranslation } from 'react-i18next';
+
 
 const { Option } = Select;
 
@@ -17,6 +19,8 @@ const StudentEditPage = () => {
     const [socialStatuses, setSocialStatuses] = useState([]);
     const [eduGroups, setEduGroups] = useState([]);
     const [profile, setProfile] = useState(null);
+    const { t } = useTranslation();
+
 
     const [citizenId, setCitizenId] = useState(null);
     const [userInstitutionName, setUserInstitutionName] = useState("");
@@ -177,84 +181,84 @@ const StudentEditPage = () => {
     return (
         <div className="h-screen w-full overflow-y-auto p-4 bg-gray-100 dark:bg-gray-900 space-y-6">
             <Card className="shadow-md">
-                <p className="text-lg mb-4 text-gray-800 dark:text-white">Talaba shaxsiy ma‘lumotlarini tekshirish</p>
+                <p className="text-lg mb-4 text-gray-800 dark:text-white">{t("title4")}</p>
                 <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <Form.Item label="JSHSHIR" name="jshshir">
+                    <Form.Item label={t("pinflLabel")} name="jshshir">
                         <Input placeholder="12345678901234" />
                     </Form.Item>
 
-                    <Form.Item label="Tug'ilgan sana (JSHSHIR bilan)" name="birth_date">
+                    <Form.Item label={t("birthDateWithPinflLabel")} name="birth_date">
                         <DatePicker format="DD.MM.YYYY" className="w-full" />
                     </Form.Item>
 
-                    <Form.Item label="Pasport seriyasi va raqami" name="passport">
+                    <Form.Item label={t("passportLabel")} name="passport">
                         <Input placeholder="AA1234567" />
                     </Form.Item>
 
                     <Form.Item label="">
-                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckCitizen}>Tekshirish</Button>
+                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckCitizen}>{t("checkButton")}</Button>
                     </Form.Item>
 
-                    <Form.Item label="Tug'ilganlik guvohnomasi seriyasi" name="birth_cert_serial">
-                        <Input placeholder="Guvohnoma seriyasi" />
+                    <Form.Item label={t("birthCertSerialLabel")} name="birth_cert_serial">
+                        <Input placeholder={t("birthCertSerialPlaceholder")} />
                     </Form.Item>
 
-                    <Form.Item label="Tug'ilganlik guvohnomasi raqami" name="birth_cert_number">
-                        <Input placeholder="Guvohnoma raqami" />
+                    <Form.Item label={t("birthCertNumberLabel")} name="birth_cert_number">
+                        <Input placeholder={t("birthCertNumberPlaceholder")} />
                     </Form.Item>
 
-                    <Form.Item label="Tug'ilgan sana (guvohnoma bilan)" name="birth_cert_birth_date">
+                    <Form.Item label={t("birthDateWithCertLabel")} name="birth_cert_birth_date">
                         <DatePicker format="DD.MM.YYYY" className="w-full" />
                     </Form.Item>
 
                     <Form.Item label="">
-                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckByBirthCertificate}>Tekshirish</Button>
+                        <Button type="primary" className="mt-7 w-24" onClick={handleCheckByBirthCertificate}>{t("checkButton")}</Button>
                     </Form.Item>
                 </Form>
             </Card>
             <div className="flex justify-end gap-3 mt-5">
-                <Button type="primary" onClick={handleUpdateStudent}>Saqlash</Button>
-                <Button onClick={() => navigate("/study-process/students")}>Orqaga</Button>
+                <Button type="primary" onClick={handleUpdateStudent}>{t("Addstaffs.saqlash")}</Button>
+                <Button onClick={() => navigate("/study-process/students")}>{t("backButton")}</Button>
             </div>
 
-            <Card title="Talaba shaxsiy ma'lumotlari">
+            <Card title={t("title5")}>
                 <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Form.Item label="Ismi" name="first_name">
+                    <Form.Item label={t("firstNameLabel")} name="first_name">
                         <Input disabled />
                     </Form.Item>
-                    <Form.Item label="Familiyasi" name="last_name">
+                    <Form.Item label={t("lastNameLabel")} name="last_name">
                         <Input disabled />
                     </Form.Item>
-                    <Form.Item label="Sharifi" name="middle_name">
+                    <Form.Item label={t("middleNameLabel")} name="middle_name">
                         <Input disabled />
                     </Form.Item>
-                    <Form.Item label="Jinsi" name="gender">
+                    <Form.Item label={t("genderLabel")} name="gender">
                         <Select disabled>
-                            <Option value="M">Erkak</Option>
-                            <Option value="F">Ayol</Option>
+                            <Option value="M">{t("maleOption")}</Option>
+                            <Option value="F">{t("femaleOption")}</Option>
                         </Select>
                     </Form.Item>
                 </Form>
             </Card>
 
-            <Card title="Talabaning doimiy yashash ma'lumotlari">
+            <Card title={t("title6")}>
                 <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Form.Item label="Viloyat" name="permanent_region">
+                    <Form.Item label={t("regionLabel")} name="permanent_region">
                         <Select onChange={onRegionChange}>
                             {regions.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Tuman" name="permanent_district">
+                    <Form.Item label={t("districtLabel")} name="permanent_district">
                         <Select onChange={onDistrictChange}>
                             {districts.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Mahalla" name="permanent_mahalla">
+                    <Form.Item label={t("mahallaLabel")} name="permanent_mahalla">
                         <Select>
                             {neighbourhoods.map(n => <Option key={n.id} value={n.id}>{n.name}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Fuqarolik turi" name="citizenship_type">
+                    <Form.Item label={t("citizenshipTypeLabel")} name="citizenship_type">
                         <Select>
                             {citizenships.map(c => <Option key={c.id} value={c.id}>{c.name}</Option>)}
                         </Select>
@@ -262,56 +266,56 @@ const StudentEditPage = () => {
                 </Form>
             </Card>
 
-            <Card title="Talabaning oldingi talimi ma'lumotlari">
+            <Card title={t("title7")}>
                 <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Form.Item label="Maktab viloyati" name="school_region">
+                    <Form.Item label={t("schoolRegionLabel")} name="school_region">
                         <Select onChange={onSchoolRegionChange}>
                             {regions.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Maktab tumani" name="school_district">
+                    <Form.Item label={t("schoolDistrictLabel")} name="school_district">
                         <Select onChange={onSchoolDistrictChange}>
                             {schoolDistricts.map(d => <Option key={d.id} value={d.id}>{d.name}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Maktab" name="school">
+                    <Form.Item label={t("schoolLabel")} name="school">
                         <Select>
                             {schools.map(s => <Option key={s.id} value={s.id}>{s.name?.uz}</Option>)}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Bitirgan yil" name="school_finished_year">
+                    <Form.Item label={t("graduationYearLabel")} name="school_finished_year">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Attestat seriyasi" name="school_certificate_serial">
+                    <Form.Item label={t("certificateSerialLabel")} name="school_certificate_serial">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Attestat raqami" name="school_certificate_number">
+                    <Form.Item label={t("certificateNumberLabel")} name="school_certificate_number">
                         <Input />
                     </Form.Item>
                 </Form>
             </Card>
 
-            <Card title="Talabaning hozirgi talimi ma'lumotlari">
+            <Card title={t("title8")}>
                 <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Form.Item label="Hozirda ta'lim olayotgan litsey">
+                    <Form.Item label={t("currentLyceumLabel")}>
                         <Input value={profile?.institution?.name?.uz || ''} disabled />
                     </Form.Item>
-                    <Form.Item label="Ta'lim guruhi" name="edu_group_id">
+                    <Form.Item label={t("educationGroupLabel")} name="edu_group_id">
                         <Select>
                             {eduGroups.map(group => (
                                 <Option key={group.id} value={group.id}>{group.name}</Option>
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Holati" name="status">
+                    <Form.Item label={t("statusLabel")} name="status">
                         <Select>
-                            <Option value="ACTIVE">O'qimoqda</Option>
-                            <Option value="INACTIVE">Bitirgan</Option>
-                            <Option value="GRADUATED">Chetlashgan</Option>
-                            <Option value="EXPELLED">Akademik ta'til</Option>
+                            <Option value="ACTIVE">{t("statusActive")}</Option>
+                            <Option value="INACTIVE">{t("statusInactive")}</Option>
+                            <Option value="GRADUATED">{t("statusGraduated")}</Option>
+                            <Option value="EXPELLED">{t("statusExpelled")}</Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Ijtimoiy holati" name="social_status_id">
+                    <Form.Item label={t("socialStatusLabel")} name="social_status_id">
                         <Select>
                             {socialStatuses.map(status => (
                                 <Option key={status.id} value={status.id}>{status.name}</Option>

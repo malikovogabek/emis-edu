@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { fetchData } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const CurriculumsPage = () => {
     const [curriculums, setCurriculums] = useState([]);
@@ -11,6 +13,8 @@ const CurriculumsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     const loadCurriculums = useCallback(async () => {
         setLoading(true);
@@ -77,13 +81,13 @@ const CurriculumsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">O'quv Rejalar Ro'yxati</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("Corsiculums.oquv_rej_ruyx")}</h1>
 
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -94,7 +98,7 @@ const CurriculumsPage = () => {
                         onClick={handleAddNewCurriculumClick}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        + Yangi kiritish
+                        {t("staffsAdd.yangi_kiritsh")}
                     </button>
                 </div>
             </div>
@@ -109,11 +113,11 @@ const CurriculumsPage = () => {
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">O'quv rejasi nomi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ta'lim yo'nalishi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">O'quv yili</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aktiv semestrlar</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("corsiculms")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("study")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("year")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("semesters")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("Corsiculums.status")}</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -146,14 +150,14 @@ const CurriculumsPage = () => {
 
                     {totalItems > itemsPerPage && (
                         <div className="flex justify-between items-center mt-4 px-6 py-3 bg-gray-50 dark:bg-gray-700 rounded-b-lg text-gray-700 dark:text-gray-300">
-                            <span className="text-sm">Jami {totalItems} ta</span>
+                            <span className="text-sm">{t("total")} {totalItems} {t("ta")}</span>
                             <div className="flex items-center space-x-2">
                                 <button
                                     onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={currentPage === 1}
                                     className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Oldingi
+                                    {t("previous")}
                                 </button>
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
                                     <button
@@ -172,11 +176,11 @@ const CurriculumsPage = () => {
                                     disabled={currentPage === totalPages}
                                     className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Keyingi
+                                    {t("next")}
                                 </button>
                             </div>
                             <span className="text-sm">
-                                {currentPage} / {totalPages} sahifa
+                                {currentPage} / {totalPages} {t("page")}
                             </span>
                         </div>
                     )}

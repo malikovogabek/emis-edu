@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { fetchData } from "../api/api";
 //import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const TeachersPage = () => {
     const [teachers, setTeachers] = useState([]);
@@ -9,6 +11,8 @@ const TeachersPage = () => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     //const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     const loadTeachers = useCallback(async () => {
         setLoading(true);
@@ -48,13 +52,13 @@ const TeachersPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">O'qituvchilar Ro'yxati</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("Teachers.o'qtuv_ruyx")}</h1>
 
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -118,7 +122,7 @@ const TeachersPage = () => {
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <p className="text-gray-500 dark:text-gray-400">Ma'lumot topilmadi</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("Teachers.malumot_topil")}</p>
                 </div>
             )}
         </div>

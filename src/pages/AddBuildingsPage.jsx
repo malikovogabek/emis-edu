@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, InputNumber, Button, Select, Card, Spin, message } from 'antd';
 import { fetchData, postData } from '../api/api';
+import { useTranslation } from 'react-i18next';
+
 
 const { Option } = Select;
 
@@ -12,6 +14,7 @@ const AddBuildingsPage = () => {
     const [loading, setLoading] = useState(false);
     const [regionsLoading, setRegionsLoading] = useState(false);
     const [districtsLoading, setDistrictsLoading] = useState(false);
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
 
@@ -75,7 +78,7 @@ const AddBuildingsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
-            <h1 className="text-2xl font-bold mb-4">Yangi Bino Korpusini Qo‘shish</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("titleAddB")}</h1>
 
             <Card>
                 <Form
@@ -85,20 +88,20 @@ const AddBuildingsPage = () => {
                     disabled={loading}
                 >
                     <Form.Item
-                        label="Bino nomi"
+                        label={t("buildingNameLabel")}
                         name="name"
-                        rules={[{ required: true, message: 'Bino nomini kiriting' }]}
+                        rules={[{ required: true, message: (t("buildingNameRequired")) }]}
                     >
                         <Input />
                     </Form.Item>
 
                     <Form.Item
-                        label="Viloyat"
+                        label={t("regionLabel")}
                         name="region"
-                        rules={[{ required: true, message: 'Viloyatni tanlang' }]}
+                        rules={[{ required: true, message: t("regionRequired") }]}
                     >
                         <Select
-                            placeholder="Viloyat tanlang"
+                            placeholder={t("selectRegionPlaceholder")}
                             loading={regionsLoading}
                             onChange={handleRegionChange}
                         >
@@ -109,12 +112,12 @@ const AddBuildingsPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Tuman"
+                        label={t("districtLabel")}
                         name="district"
-                        rules={[{ required: true, message: 'Tumanni tanlang' }]}
+                        rules={[{ required: true, message: t("districtRequired") }]}
                     >
                         <Select
-                            placeholder="Tuman tanlang"
+                            placeholder={t("selectDistrictPlaceholder")}
                             loading={districtsLoading}
                         >
                             {districts.map(d => (
@@ -124,27 +127,27 @@ const AddBuildingsPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Bino haqida ma'lumot"
+                        label={t("descriptionLabel")}
                         name="description"
-                        rules={[{ required: true, message: 'Ma’lumot kiriting' }]}
+                        rules={[{ required: true, message: t("descriptionRequired") }]}
                     >
                         <Input.TextArea rows={2} />
                     </Form.Item>
 
                     <Form.Item
-                        label="Bino nechta qavatdan iborat"
+                        label={t("floorCountLabel")}
                         name="floor_count"
-                        rules={[{ required: true, message: 'Qavat sonini kiriting' }]}
+                        rules={[{ required: true, message: t("floorCountRequired") }]}
                     >
                         <InputNumber min={1} className="w-full" />
                     </Form.Item>
 
                     <Form.Item className="flex justify-end space-x-2">
                         <Button type="primary" htmlType="submit" loading={loading}>
-                            Saqlash
+                            {t("saveButton")}
                         </Button>
                         <Button danger onClick={() => navigate('/tm-info/buildings')}>
-                            Orqaga
+                            {t("backButton")}
                         </Button>
                     </Form.Item>
                 </Form>

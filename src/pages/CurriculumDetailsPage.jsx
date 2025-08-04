@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchData, postData } from '../api/api';
 import Loader from '../components/Loader';
 import { message } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 
 const CurriculumDetailsPage = () => {
     const { id } = useParams();
@@ -10,6 +12,8 @@ const CurriculumDetailsPage = () => {
     const [curriculumDetails, setCurriculumDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { t } = useTranslation();
+
 
     const loadCurriculumDetails = useCallback(async () => {
         setLoading(true);
@@ -19,7 +23,7 @@ const CurriculumDetailsPage = () => {
             if (responseData && responseData.success && responseData.result) {
                 setCurriculumDetails(responseData.result);
             } else {
-                setError("O'quv rejasi ma'lumotlari topilmadi yoki xato: " + JSON.stringify(responseData));
+                setError(t("dataNotFoundOrError") + JSON.stringify(responseData));
                 setCurriculumDetails(null);
             }
         } catch (err) {
@@ -91,7 +95,7 @@ const CurriculumDetailsPage = () => {
     if (!curriculumDetails) {
         return (
             <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-                <p>O'quv rejasi ma'lumotlari mavjud emas.</p>
+                <p>{t("noCurriculumDetails")}</p>
                 <button
                     onClick={() => navigate('/study-process/plans')}
                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -112,19 +116,19 @@ const CurriculumDetailsPage = () => {
                 <button
                     onClick={() => navigate(`/study-process/plans/details/${id}/edit`)}
                     className='px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition duration-200 mr-2'>
-                    Tahrirlash
+                    {t("editButton")}
                 </button>
                 {showActionButtons && (
                     <>
                         <button
                             onClick={() => navigate(`/study-process/plans/details/${id}/distribute-subjects`)}
                             className='px-4 py-2 bg-amber-400 text-white text-sm rounded-md hover:bg-amber-300 transition duration-200 mr-2'>
-                            O'quv reja fanlarini taqsimlash
+                            {t("distributeSubjectsButton")}
                         </button>
                         <button
                             onClick={handleApproveCurriculum}
                             className='px-4 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-400 transition duration-200 mr-2'>
-                            O'quv rejani tasdiqlash
+                            {t("approveCurriculumButton")}
                         </button>
                     </>
                 )}
@@ -132,7 +136,7 @@ const CurriculumDetailsPage = () => {
                     <button
                         onClick={handleDeclineCurriculum}
                         className='px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-500 transition duration-200 mr-2'>
-                        O'quv rejani bekor qilish
+                        {t("declineCurriculumButton")}
                     </button>
                 )}
 
@@ -140,46 +144,46 @@ const CurriculumDetailsPage = () => {
                     onClick={() => navigate('/study-process/plans')}
                     className="px-4 py-2 bg-white text-red-600 text-sm rounded-md  transition duration-200"
                 >
-                    &larr; Orqaga
+                    &larr; {t("backButton")}
                 </button>
             </div>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 <table className="w-full table-auto border border-gray-300 dark:border-gray-700 rounded overflow-hidden bg-white dark:bg-gray-800 mb-6">
                     <tbody>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">ID:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("id")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.id}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">O'quv rejasi nomi:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("curriculumName")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.name || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">O'quv muassasasi:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("institution")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{getUzName(curriculumDetails.institution?.name)}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Ta'lim yo'nalishi:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("eduDirection")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.edu_direction?.name || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Birinchi o'quv yili:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("startYear")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.start_year?.name || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Oxirgi o'quv yili:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("endYear")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.end_year?.name || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Ta'lim shakli:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("eduForm")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.edu_form?.name || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Semestr soni:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("numberOfSemesters")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{curriculumDetails.curriculum_template?.number_of_semesters || 'N/A'}</td>
                         </tr>
                         <tr>
-                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Status:</td>
+                            <td className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">{t("status")}</td>
                             <td className="px-4 py-2 text-gray-900 dark:text-gray-100">
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-500">
                                     {curriculumDetails.status || curriculumDetails.curriculum_template?.status || 'N/A'}
@@ -192,21 +196,21 @@ const CurriculumDetailsPage = () => {
 
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
-                <h2 className="text-xl font-bold mb-4">Fanlar Ro'yxati</h2>
+                <h2 className="text-xl font-bold mb-4">{t("subjectsList")}</h2>
 
                 {curriculumDetails.semester_edu_subjects && curriculumDetails.semester_edu_subjects.length > 0 ? (
                     curriculumDetails.semester_edu_subjects.map((semesterSubjects, semesterIndex) => (
                         <div key={semesterIndex} className="mb-8">
                             <h3 className="text-lg font-semibold mb-3">
-                                {semesterSubjects.length > 0 ? `${semesterSubjects[0].semester_number}-semestr` : `Semestr ${semesterIndex + 1}`}
+                                {semesterSubjects.length > 0 ? `${semesterSubjects[0].semester_number}-${t('semester')}` : `${t("semester")} ${semesterIndex + 1}`}
                             </h3>
                             <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
                                         <tr>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fan</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fan turi</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Umumiy soati</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("subject")}</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("subjectType")}</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("totalHours")}</th>
 
                                         </tr>
                                     </thead>
@@ -225,7 +229,7 @@ const CurriculumDetailsPage = () => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-500 dark:text-gray-400">Fanlar ma'lumotlari topilmadi.</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("noSubjectsFound")}</p>
                 )}
             </div>
         </div>

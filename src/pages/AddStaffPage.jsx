@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Button, message, Card, DatePicker, Modal, InputNumber, Table, Alert } from "antd";
 import { postData, fetchData } from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 
 const { Option } = Select;
 
@@ -12,6 +14,8 @@ const AddStaffPage = () => {
     const [positions, setPositions] = useState([]);
     const [positionForm] = Form.useForm();
     const [citizenships, setCitizenships] = useState([]);
+    const { t } = useTranslation();
+
 
 
     const navigate = useNavigate();
@@ -124,11 +128,11 @@ const AddStaffPage = () => {
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 space-y-6 overflow-y-auto">
             <div>
-                <Card className="shadow-md">
-                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">O'qituvchi qidirish</p>
+                <Card className="shadow-md  dark:bg-gray-900">
+                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">{t("Addstaffs.search_teacher")}</p>
                     <Form layout="vertical" form={form} className="grid grid-cols-1 md:grid-cols-7 gap-3">
                         <Form.Item
-                            label="JSHSHIR"
+                            label={t("Addstaffs.jshshr")}
                             name="jshshir"
                             rules={[{ required: true, message: "JSHSHIR kiritilishi shart" }]}
                         >
@@ -136,7 +140,7 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Tug'ilgan sana"
+                            label={t("Addstaffs.tug'il_sana")}
                             name="birth_date"
                             rules={[{ required: true, message: "Sana kiritilishi shart" }]}
                         >
@@ -144,7 +148,7 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Pasport seriyasi va raqami"
+                            label={t("Addstaffs.p_s_raqami")}
                             name="passport"
                             rules={[{ required: true, message: "Pasport ma'lumotlari kiritilishi shart" }]}
                         >
@@ -152,15 +156,15 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item label="">
-                            <Button type="primary" className="mt-7 w-24 " onClick={handleCheckPassport}>Tekshirish</Button>
+                            <Button type="primary" className="mt-7 w-24 " onClick={handleCheckPassport}>{t("Addstaffs.tekshirish")}</Button>
                         </Form.Item>
                     </Form>
                 </Card>
             </div>
 
             <div>
-                <Card className="shadow-md">
-                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">Xodimni qo'shish</p>
+                <Card className="shadow-md  dark:bg-gray-900">
+                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">{t("Addstaffs.xodim_qosh")}</p>
                     <Form
                         form={form}
                         layout="vertical"
@@ -171,7 +175,7 @@ const AddStaffPage = () => {
                             <Input />
                         </Form.Item>
                         <Form.Item
-                            label="Ismi"
+                            label={t("Addstaffs.sim")}
                             name="first_name"
                             rules={[{ required: true, message: "Ism majburiy" }]}
                         >
@@ -179,7 +183,7 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Familiyasi"
+                            label={t("Addstaffs.fami")}
                             name="last_name"
                             rules={[{ required: true, message: "Familiya majburiy" }]}
                         >
@@ -187,7 +191,7 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Otasining ismi"
+                            label={t("Addstaffs.otchis")}
                             name="father_name"
                             rules={[{ required: true, message: "Otasining ismi majburiy" }]}
                         >
@@ -195,11 +199,11 @@ const AddStaffPage = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Fuqaroligi"
+                            label={t("Addstaffs.fuqorolik")}
                             name="citizenship"
                             rules={[{ required: true, message: "Fuqarolik tanlang" }]}
                         >
-                            <Select placeholder="Tanlang">
+                            <Select placeholder={t("Addstaffs.tanlang")}>
                                 {citizenships.map((item) => (
                                     <Option key={item.id} value={item.id}>
                                         {item.name}
@@ -210,36 +214,36 @@ const AddStaffPage = () => {
 
 
                         <Form.Item className="md:col-span-2 flex justify-end m-3 gap-2">
-                            <Button type="primary" htmlType="submit" loading={loading}>Saqlash</Button>
-                            <Button type="default" danger onClick={() => navigate("/admin-process/staffs")}>Orqaga</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>{t("Addstaffs.saqlash")}</Button>
+                            <Button type="default" danger onClick={() => navigate("/admin-process/staffs")}>{t("Addstaffs.orqaga")}</Button>
                         </Form.Item>
                     </Form>
                 </Card>
             </div>
 
             <div>
-                <Card className="shadow-md">
-                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">O'qituvchi lavozimlari</p>
+                <Card className="shadow-md  dark:bg-gray-900">
+                    <p className="text-lg  mb-4 text-gray-800 dark:text-white">{t("Addstaffs.o'qt_lavozim")}</p>
                     <div className="flex justify-end m-3 mb-2">
-                        <Button type="primary" onClick={() => setPositionModalOpen(true)}>Lavozim qo'shish</Button>
+                        <Button type="primary" onClick={() => setPositionModalOpen(true)}>{t("Addstaffs.lavoz_qo'shish")}</Button>
                     </div>
                     <Table
                         columns={[
-                            { title: "Lavozimi", dataIndex: "title" },
-                            { title: "Mehnat shakli", dataIndex: "work_type" },
-                            { title: "Stavka", dataIndex: "rate" }
+                            { title: t("Addstaffs.title"), dataIndex: "title" },
+                            { title: t("Addstaffs.work_type"), dataIndex: "work_type" },
+                            { title: t("Addstaffs.rate"), dataIndex: "rate" }
                         ]}
                         dataSource={positions}
                         pagination={false}
                         locale={{
                             emptyText: (
-                                <div className="text-center text-gray-400 py-10">
+                                <div className="text-center  dark:bg-gray-900 text-gray-400 py-10">
                                     <img
                                         src="https://arm.sammoi.uz/bootstrap/images/not-found.png"
                                         alt="Empty"
                                         className="mx-auto w-16 h-16 mb-2"
                                     />
-                                    <p>Ma'lumot topilmadi</p>
+                                    <p>{t("Addstaffs.malumot_topilmadi")}</p>
                                 </div>
                             )
                         }}
@@ -249,7 +253,7 @@ const AddStaffPage = () => {
             </div>
 
             <Modal
-                title="Lavozim qo‘shish"
+                title={t("Addstaffs.lavozm_qosh")}
                 open={positionModalOpen}
                 onCancel={() => setPositionModalOpen(false)}
                 footer={null}
@@ -261,37 +265,37 @@ const AddStaffPage = () => {
                         setPositions((prev) => [...prev, values]);
                         setPositionModalOpen(false);
                         positionForm.resetFields();
-                        message.success("Lavozim qo‘shildi");
+                        message.success(t("Addstaffs.lavozm_qoshldi"));
                     }}
                 >
                     <Form.Item
-                        label="Lavozimi"
+                        label={t("Addstaffs.lavozm")}
                         name="title"
                         rules={[{ required: true, message: "Lavozimni kiriting" }]}
                     >
-                        <Select placeholder="Tanlash">
-                            <Option value="direktor">Direktor</Option>
-                            <Option value="o'rinbosar">O'quv ishlari buyicha o'rinbosar</Option>
-                            <Option value="o'qituvchi">O'qituvchi</Option>
+                        <Select placeholder={t("Addstaffs.tanlash")}>
+                            <Option value="direktor">{t("Addstaffs.deriktor")}</Option>
+                            <Option value="o'rinbosar">{t("Addstaffs.orinbosar")}</Option>
+                            <Option value="o'qituvchi">{t("Addstaffs.o'qituvchi")}</Option>
                         </Select>
                     </Form.Item>
 
                     <Form.Item
-                        label="Mehnat shakli"
+                        label={t("Addstaffs.mehnat_shakli")}
                         name="work_type"
                         rules={[{ required: true, message: "Mehnat shaklini tanlang" }]}
                     >
                         <Select>
-                            <Option value="To'liq stavka">Asosiy ish joyi</Option>
-                            <Option value="qoshimcha">O'rindoshlik(ichki-qo'shimcha)</Option>
-                            <Option value="asosiy">O'rindoshlik(ichki-asosiy)</Option>
-                            <Option value="stavka">O'rindoshlik(tashqi)</Option>
-                            <Option value="soatbay">Soatbay</Option>
+                            <Option value="To'liq stavka">{t("Addstaffs.to'liq_staf")}</Option>
+                            <Option value="qoshimcha">{t("Addstaffs.qoshimcha")}</Option>
+                            <Option value="asosiy">{t("Addstaffs.asosy")}</Option>
+                            <Option value="stavka">{t("Addstaffs.stavka")}</Option>
+                            <Option value="soatbay">{t("Addstaffs.saotbay")}</Option>
                         </Select>
                     </Form.Item>
 
                     <Form.Item
-                        label="Ishchi oylik stavkasi (0.05-1.5)"
+                        label={t("Addstaffs.ichki_oy")}
                         name="rate"
                         rules={[{ required: true, message: "Stavkani kiriting" }]}
                     >
@@ -299,8 +303,8 @@ const AddStaffPage = () => {
                     </Form.Item>
 
                     <Form.Item className="flex justify-end gap-2">
-                        <Button onClick={() => setPositionModalOpen(false)}>Orqaga</Button>
-                        <Button type="primary" htmlType="submit">Saqlash</Button>
+                        <Button onClick={() => setPositionModalOpen(false)}>{t("Addstaffs.orqaga2")}</Button>
+                        <Button type="primary" htmlType="submit">{t("Addstaffs.saqlash2")}</Button>
                     </Form.Item>
                 </Form>
             </Modal>

@@ -55,3 +55,114 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+.dark .ant-form-item-label > label,
+.dark .ant-select-selection-item {
+  @apply text-yellow-50;
+}
+
+/* Ant Design v5 Select componentini dark modeda to‘g‘rilash */
+.dark .ant-select-selector {
+  background-color: #1f2937 !important; /* Tailwind: bg-gray-800 */
+  color: white !important;
+  border-color: #4b5563 !important; /* Tailwind: border-gray-600 */
+}
+
+.dark .ant-select-item-option-selected {
+  background-color: #374151 !important; /* Tailwind: bg-gray-700 */
+  color: white !important;
+}
+
+.dark .ant-select-item-option-active {
+  background-color: #4b5563 !important; /* Tailwind: bg-gray-600 */
+  color: white !important;
+}
+
+/* Input uchun dark mode dizayni */
+.dark .ant-input {
+  background-color: #1f2937 !important; /* Tailwind: bg-gray-800 */
+  color: white !important;
+  border-color: #4b5563 !important; /* Tailwind: border-gray-600 */
+}
+
+.dark .ant-input::placeholder {
+  color: #9ca3af !important; /* Tailwind: text-gray-400 */
+}
+
+/* dark mode uchun InputNumber */
+.dark .ant-input-number {
+  background-color: #1f2937 !important; /* Tailwind: bg-gray-800 */
+  color: white !important;
+  border-color: #4b5563 !important;     /* Tailwind: border-gray-600 */
+}
+
+/* Input ichidagi sonlar */
+.dark .ant-input-number-input {
+  background-color: #1f2937 !important;
+  color: white !important;
+}
+
+/* Placeholder uchun (agar mavjud bo‘lsa) */
+.dark .ant-input-number-input::placeholder {
+  color: #9ca3af !important; /* Tailwind: text-gray-400 */
+}
+
+.dark .ant-select-selection-placeholder {
+  color: #9ca3af !important;
+}
+
+/* Jadval header qismini dark rejimga moslab stil berish */
+.dark .ant-table-wrapper .ant-table-thead > tr > th {
+  background-color: #1f2937 !important; /* bg-gray-800 */
+  color: white !important;
+  border-color: #374151 !important; /* bg-gray-700 */
+}
+
+/* Agar jadval headerda td ishlatilgan bo‘lsa (kam holatda) */
+.dark .ant-table-wrapper .ant-table-thead > tr > td {
+  background-color: #1f2937 !important;
+  color: white !important;
+  border-color: #374151 !important;
+}
+
+/* Jadvalning tbody qismidagi hujayralarni dark modeda o‘zgartirish */
+.dark .ant-table-wrapper .ant-table-tbody > tr > td {
+  background-color: #111827 !important; /* Tailwind: bg-gray-900 */
+  color: #e5e7eb !important; /* Tailwind: text-gray-200 */
+  border-color: #1f2937 !important; /* Tailwind: border-gray-800 */
+}
+
+/* DatePicker (ant-picker) komponenti uchun dark mode stil */
+.dark .ant-picker {
+  background-color: #1f2937 !important;  /* Tailwind: bg-gray-800 */
+  color: white !important;
+  border-color: #4b5563 !important;      /* Tailwind: border-gray-600 */
+}
+
+/* Input ichidagi yozuv */
+.dark .ant-picker input {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+/* Placeholder uchun */
+.dark .ant-picker input::placeholder {
+  color: #9ca3af !important; /* Tailwind: text-gray-400 */
+}
+.dark :where(.css-dev-only-do-not-override-1rfzxih).ant-card .ant-card-body {
+  background-color: #1f2937 !important; /* dark-gray */
+  color: #e5e7eb !important; /* text-gray-200 */
+}
+.dark :where(.css-dev-only-do-not-override-1rfzxih).ant-card .ant-card-head {
+  background-color: #374151 !important; /* Tailwind: bg-gray-700 */
+  color: #e5e7eb !important;            /* Tailwind: text-gray-200 */
+  border-color: #4b5563 !important;     /* Tailwind: border-gray-600 */
+}
+.dark .bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity)); /* Tailwind: bg-gray-800 */
+}
+.dark:is(*) .text-gray-300 {
+  color: rgb(96 165 250 / 1) !important; /* Tailwind text-blue-400 */
+}

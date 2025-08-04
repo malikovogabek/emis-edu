@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { fetchData, postData } from '../api/api';
 import AddClassHourModal from '../components/AddClassHourModal';
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const ClassHoursPage = () => {
     const [classHours, setClassHours] = useState([]);
@@ -9,6 +11,8 @@ const ClassHoursPage = () => {
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [institutionId] = useState('10778');
+    const { t } = useTranslation();
+
 
     useEffect(() => {
         if (institutionId) {
@@ -135,30 +139,30 @@ const ClassHoursPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Dars soatlari</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("titled")}</h1>
 
             <div className="flex justify-end mb-4">
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 transition duration-300"
                 >
-                    Shakllantirish
+                    {t("generateButton")}
                 </button>
             </div>
 
             {loading ? (
                 <Loader />
             ) : error ? (
-                <p className="text-red-600 dark:text-red-400">Xato: {error}</p>
+                <p className="text-red-600 dark:text-red-400">{t("error")} {error}</p>
             ) : (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
 
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Para</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Boshlanish vaqti</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tugash vaqti</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("pairHeader")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("startTimeHeader")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("endTimeHeader")}</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">

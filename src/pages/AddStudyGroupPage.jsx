@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Select, Button, Card, message } from 'antd';
 import { postData, fetchData } from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 const AddStudyGroupPage = () => {
     const [form] = Form.useForm();
@@ -9,6 +11,8 @@ const AddStudyGroupPage = () => {
     const [startYearsOptions, setStartYearsOptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     useEffect(() => {
         const loadOptions = async () => {
@@ -84,15 +88,15 @@ const AddStudyGroupPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Yangi Guruh Qo‘shish</h1>
-            <Card className="shadow-md">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{t("newGroupAdd")}</h1>
+            <Card className="shadow-md  dark:bg-gray-900">
                 <Form className="grid grid-cols-1 md:grid-cols-2  gap-3"
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                 >
                     <Form.Item
-                        label="Guruh nomi"
+                        label={t("groupName")}
                         name="name"
                         rules={[{ required: true, message: 'Guruh nomi majburiy' }]}
                     >
@@ -100,11 +104,11 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="O‘quv rejasi"
+                        label={t("curriculum")}
                         name="curriculum"
                         rules={[{ required: true, message: "O‘quv rejasi tanlanishi kerak" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {curriculumsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
                             ))}
@@ -112,11 +116,11 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Brinchi o'quv yili"
+                        label={t("startYear")}
                         name="start_year_code"
                         rules={[{ required: true, message: "O‘quv yili tanlanishi kerak" }]}
                     >
-                        <Select placeholder="Tanlang" onChange={handleStartYearsChange}>
+                        <Select placeholder={t("selectPlaceholder")} onChange={handleStartYearsChange}>
                             {startYearsOptions.map((option, idx) => (
                                 <Select.Option key={option.id} value={option.id} disabled={idx === startYearsOptions.length - 1}>{option.name}</Select.Option>
                             ))}
@@ -124,7 +128,7 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Oxirgi o'quv yili"
+                        label={t("endYear")}
                         name="start_year_code2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
@@ -140,7 +144,7 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Guruhga kiritilishi kerak bo‘lgan talabalar soni"
+                        label={t("groupnamber")}
                         name="soni"
                         rules={[{ required: true, type: Number, message: "Boshlanish yili kerak" }]}
                     >
@@ -148,7 +152,7 @@ const AddStudyGroupPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Joriy semestr"
+                        label={t("currentSemester")}
                         name="current_semester"
                         rules={[{ required: true, type: 'number', min: 1, message: 'Semestr raqami 1 dan katta bo‘lishi kerak' }]}
                     >
@@ -162,10 +166,10 @@ const AddStudyGroupPage = () => {
                                 danger
                                 onClick={() => navigate('/study-process/groups')}
                             >
-                                Orqaga
+                                {t("backButton")}
                             </Button>
                             <Button type="primary" htmlType="submit" loading={loading}>
-                                Qo‘shish
+                                {t("addButton")}
                             </Button>
                         </div>
                     </Form.Item>

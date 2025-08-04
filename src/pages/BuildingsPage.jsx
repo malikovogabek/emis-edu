@@ -3,12 +3,15 @@ import { fetchData, deleteData } from '../api/api';
 import Loader from "../components/Loader";
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 
 const BuildingsPage = () => {
     const [buildings, setBuildings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [postSuccess, setPostSuccess] = useState(null);
+    const { t } = useTranslation();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(20);
@@ -112,12 +115,12 @@ const BuildingsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Bino Korpuslari</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("buildings")}</h1>
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="py-2 px-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -128,7 +131,7 @@ const BuildingsPage = () => {
                         onClick={() => navigate('/tm-info/buildings/add')}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        + Yangi kiritish
+                        {t("staffsAdd.yangi_kiritsh")}
                     </button>
                 </div>
             </div>
@@ -146,9 +149,9 @@ const BuildingsPage = () => {
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bino Nomi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Qavatlar</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amallar</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("buildingName")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("floors")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("actions")}</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -161,9 +164,9 @@ const BuildingsPage = () => {
                                         <button
                                             onClick={() => navigate(`/tm-info/buildings/${building.id}/edit`, { state: { building } })}
                                             className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-2">
-                                            Tahrirlash
+                                            {t("editButton")}
                                         </button>
-                                        <button onClick={() => handleDeleteBuilding(building.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">O'chirish</button>
+                                        <button onClick={() => handleDeleteBuilding(building.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">{t("delButton")}</button>
                                     </td>
                                 </tr>
                             ))}

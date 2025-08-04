@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Select, Button, Card, message } from 'antd';
 import { fetchData, putData } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 const EditGroupPage = () => {
     const [form] = Form.useForm();
@@ -10,6 +12,8 @@ const EditGroupPage = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { id } = useParams();
+    const { t } = useTranslation();
+
 
     useEffect(() => {
         const loadOptions = async () => {
@@ -84,21 +88,22 @@ const EditGroupPage = () => {
         form.setFieldsValue({ start_year_code2: nextItem ? nextItem.id : null });
     };
 
+
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Guruhni Tahrirlash</h1>
-            <Card className="shadow-md">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{t("groupEdit")}</h1>
+            <Card className="shadow-md dark:bg-gray-900">
                 <Form
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                     className="grid grid-cols-1 md:grid-cols-2 gap-3"
                 >
-                    <Form.Item label="Guruh nomi" name="name" rules={[{ required: true, message: 'Guruh nomi majburiy' }]}>
+                    <Form.Item label={t("groupName")} name="name" rules={[{ required: true, message: 'Guruh nomi majburiy' }]}>
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="O‘quv rejasi" name="curriculum" rules={[{ required: true }]}>
+                    <Form.Item label={t("curriculum")} name="curriculum" rules={[{ required: true }]}>
                         <Select>
                             {curriculumsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
@@ -106,7 +111,7 @@ const EditGroupPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Birinchi o‘quv yili" name="start_year_code" rules={[{ required: true }]}>
+                    <Form.Item label={t("startYear")} name="start_year_code" rules={[{ required: true }]}>
                         <Select onChange={handleStartYearsChange}>
                             {startYearsOptions.map((option, idx) => (
                                 <Select.Option key={option.id} value={option.id} disabled={idx === startYearsOptions.length - 1}>{option.name}</Select.Option>
@@ -114,7 +119,7 @@ const EditGroupPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Oxirgi o‘quv yili" name="start_year_code2" rules={[{ required: true }]}>
+                    <Form.Item label={t("endYear")} name="start_year_code2" rules={[{ required: true }]}>
                         <Select disabled>
                             {startYearsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
@@ -122,18 +127,18 @@ const EditGroupPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Talabalar soni" name="soni" rules={[{ required: true }]}>
+                    <Form.Item label={t("groupnamber")} name="soni" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Joriy semestr" name="current_semester" rules={[{ required: true, type: 'number', min: 1 }]}>
+                    <Form.Item label={t("currentSemester")} name="current_semester" rules={[{ required: true, type: 'number', min: 1 }]}>
                         <InputNumber className="w-full" min={1} />
                     </Form.Item>
 
                     <Form.Item className="col-span-full">
                         <div className="flex justify-end gap-2">
-                            <Button danger onClick={() => navigate('/study-process/groups')}>Orqaga</Button>
-                            <Button type="primary" htmlType="submit" loading={loading}>Saqlash</Button>
+                            <Button danger onClick={() => navigate('/study-process/groups')}> {t("backButton")}</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>{t("Addstaffs.saqlash")}</Button>
                         </div>
                     </Form.Item>
                 </Form>

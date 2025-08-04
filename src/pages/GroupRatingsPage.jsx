@@ -28,8 +28,6 @@ const GroupRatingsPage = () => {
 
             const subjectData = response.results || [];
 
-            // console.log("Fanlar API javobi:", subjectData);
-
             const semesterSubjects = {};
             HARDCODED_SEMESTERS.forEach((sem, index) => {
                 const semesterArray = subjectData[index] || [];

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postData, fetchData, putData } from '../api/api';
 import { Form, Input, InputNumber, Select, Button, Card, message, Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -13,6 +14,7 @@ const AddRoomsPage = () => {
     const [buildingsLoading, setBuildingsLoading] = useState(true);
     const navigate = useNavigate();
     const { roomId } = useParams();
+    const { t } = useTranslation();
 
 
     const isEditing = !!roomId;
@@ -109,11 +111,11 @@ const AddRoomsPage = () => {
     return (
         <div className="p-4  bg-gray-100 dark:bg-gray-900 flex-1">
             <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-                {isEditing ? 'Xonani Tahrirlash' : 'Yangi Xona Qo‘shish'}
+                {isEditing ? t("editTitle") : t("addTitle")}
             </h1>
             <Card>
                 {buildingsLoading || (loading && isEditing) ? (
-                    <Spin tip={buildingsLoading ? "Binolar yuklanmoqda..." : "Xona ma'lumotlari yuklanmoqda..."} />
+                    <Spin tip={buildingsLoading ? t("loadingBuildings") : t("loadingRoomData")} />
                 ) : (
                     <Form
                         form={form}
@@ -122,11 +124,11 @@ const AddRoomsPage = () => {
                         disabled={loading && !buildingsLoading}
                     >
                         <Form.Item
-                            label="Bino"
+                            label={t("buildingLabel")}
                             name="building"
-                            rules={[{ required: true, message: 'Iltimos, bino tanlang' }]}
+                            rules={[{ required: true, message: t("buildingRequired") }]}
                         >
-                            <Select placeholder="Bino tanlang">
+                            <Select placeholder={t("selectBuildingPlaceholder")}>
                                 {buildings.map((bino) => (
                                     <Option key={bino.id} value={bino.id}>{bino.name}</Option>
                                 ))}
@@ -135,32 +137,32 @@ const AddRoomsPage = () => {
 
 
                         <Form.Item
-                            label="Xona nomi"
+                            label={t("roomNameLabel")}
                             name="room_name"
-                            rules={[{ required: true, message: 'Iltimos, xona nomini kiriting' }]}
+                            rules={[{ required: true, message: t("roomNameRequired") }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Xona sigʻimi"
+                            label={t("capacityLabel")}
                             name="capacity"
-                            rules={[{ required: true, message: 'Iltimos, xona sigʻimini kiriting' }]}
+                            rules={[{ required: true, message: t("capacityRequired") }]}
                         >
                             <InputNumber min={1} className="w-full" />
                         </Form.Item>
 
                         <Form.Item
-                            label="Xona nechanchi qavatda joylashgan"
+                            label={t("floorNumberLabel")}
                             name="floor_number"
-                            rules={[{ required: true, message: 'Iltimos, qavat raqamini kiriting' }]}
+                            rules={[{ required: true, message: t("floorNumberRequired") }]}
                         >
                             <InputNumber min={1} className="w-full" />
                         </Form.Item>
 
 
                         <Form.Item
-                            label="Xona haqida malumot"
+                            label={t("descriptionLabelR")}
                             name="description"
                         >
                             <TextArea rows={2} />
@@ -173,10 +175,10 @@ const AddRoomsPage = () => {
                                     htmlType="submit"
                                     loading={loading}
                                 >
-                                    {isEditing ? 'Saqlash' : 'Qo‘shish'}
+                                    {isEditing ? t("saveButton") : t("addButton")}
                                 </Button>
                                 <Button danger onClick={() => navigate('/tm-info/rooms')}>
-                                    Orqaga
+                                    {t("backButton")}
                                 </Button>
                             </div>
                         </Form.Item>

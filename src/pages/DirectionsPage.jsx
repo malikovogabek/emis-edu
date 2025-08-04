@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchData } from "../api/api";
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const DirectionsPage = () => {
     const [directions, setDirections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { t } = useTranslation();
+
 
     const loadDirections = useCallback(async () => {
         setLoading(true);
@@ -44,13 +48,13 @@ const DirectionsPage = () => {
                 <p className="text-red-600 dark:text-red-400">Xato: {error}</p>
             ) : directions.length > 0 ? (
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md overflow-x-auto">
-                    <h1 className="text-xl font-bold mb-4"> Yo'nalishlar</h1>
+                    <h1 className="text-xl font-bold mb-4">{t("Directions.yo'nalishlar")}</h1>
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ta'lim yo'nalishi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ta'lim yo'nalishi kodi</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("Directions.talim_yunalsh")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("Directions.talim_yunalsh_kodi")}</th>
 
                             </tr>
                         </thead>
@@ -84,7 +88,7 @@ const DirectionsPage = () => {
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <p className="text-gray-500 dark:text-gray-400">Ma'lumot topilmadi</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("Teachers.malumot_topil")}</p>
                 </div>
             )}
         </div>

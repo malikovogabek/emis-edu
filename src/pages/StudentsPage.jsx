@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { fetchData } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const StudentsPage = () => {
     const [students, setStudents] = useState([]);
@@ -12,6 +14,8 @@ const StudentsPage = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     const loadPageData = useCallback(async () => {
         setLoading(true);
@@ -95,12 +99,12 @@ const StudentsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Talabalar Ro'yxati</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("studentsPage")}</h1>
             <div className="flex justify-between items-center mb-4">
                 <div className=''>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="py-2 px-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -111,7 +115,7 @@ const StudentsPage = () => {
                         onClick={handleAddNewStudentClick}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        + Yangi kiritish
+                        {t("staffsAdd.yangi_kiritsh")}
                     </button>
                 </div>
             </div>
@@ -128,11 +132,11 @@ const StudentsPage = () => {
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">F.I.O.</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Guruh nomi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kurs</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">JSHSHIR</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Talaba holati</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("fullName")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("groupName")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("course")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("pinfll")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("studentStatus")}</th>
 
                             </tr>
                         </thead>
@@ -152,7 +156,7 @@ const StudentsPage = () => {
                                         <span
                                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200"
                                         >
-                                            O'qimoqda
+                                            {t("reading")}
                                         </span>
                                     </td>
 
@@ -179,7 +183,7 @@ const StudentsPage = () => {
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <p className="text-gray-500 dark:text-gray-400">Ma'lumot topilmadi</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("Teachers.malumot_topil")}</p>
                 </div>
             )}
 
@@ -187,7 +191,7 @@ const StudentsPage = () => {
             {totalPages > 1 && (
                 <div className="flex justify-end items-center mt-4 space-x-2">
                     <span className="text-sm text-gray-700 dark:text-gray-300">
-                        Jami {totalCount} ta talaba / {totalPages} ta sahifa
+                        {t("total")} {totalCount} {t("total1")} / {totalPages} {t("total2")}
                     </span>
 
                     <button
@@ -195,7 +199,7 @@ const StudentsPage = () => {
                         disabled={currentPage === 1}
                         className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50"
                     >
-                        Oldingi
+                        {t("previous")}
                     </button>
 
                     {pageNumbers.map(number => (
@@ -216,7 +220,7 @@ const StudentsPage = () => {
                         disabled={currentPage === totalPages}
                         className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50"
                     >
-                        Keyingi
+                        {t("next")}
                     </button>
                 </div>
             )}

@@ -9,48 +9,52 @@ import {
     faChevronDown,
     faChevronUp
 } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
+
 
 function Sidebar() {
     const [openMenuItem, setOpenMenuItem] = useState([]);
+    const { t } = useTranslation();
+
 
     const navItems = [
         {
-            name: "Ma'muriy jarayon TM",
+            name: t("sidebar.admin_process"),
             icon: faTableCellsLarge,
             path: "/admin-process",
             subItems: [
-                { name: "- Xodimlar", path: "/admin-process/staffs" },
-                { name: "- O'qituvchilar", path: "/admin-process/teachers" },
+                { name: t("sidebar.staffs"), path: "/admin-process/staffs" },
+                { name: t("sidebar.teachers"), path: "/admin-process/teachers" },
             ],
         },
         {
-            name: "O'quv jarayon TM",
+            name: t("sidebar.study_process"),
             icon: faBookOpen,
             path: "/study-process",
             subItems: [
-                { name: "- Yo'nalishlar", path: "/study-process/directions" },
-                { name: "- O'quv rejalar", path: "/study-process/plans" },
-                { name: "- Guruhlar", path: "/study-process/groups" },
-                { name: "- Talabalar", path: "/study-process/students" },
-                { name: "- Bitiruvchilar", path: "/study-process/graduates" },
-                { name: "- Dars soatlari", path: "/study-process/lesson-hours" },
+                { name: t("sidebar.directions"), path: "/study-process/directions" },
+                { name: t("sidebar.plans"), path: "/study-process/plans" },
+                { name: t("sidebar.groups"), path: "/study-process/groups" },
+                { name: t("sidebar.students"), path: "/study-process/students" },
+                { name: t("sidebar.graduates"), path: "/study-process/graduates" },
+                { name: t("sidebar.lesson_hours"), path: "/study-process/lesson-hours" },
             ],
         },
         {
-            name: "TM ma'lumotlari",
+            name: t("sidebar.tm_info"),
             icon: faFolderOpen,
             path: "/tm-info",
             subItems: [
-                { name: "- Bino korpus", path: "/tm-info/buildings" },
-                { name: "- Xona", path: "/tm-info/rooms" },
+                { name: t("sidebar.buildings"), path: "/tm-info/buildings" },
+                { name: t("sidebar.rooms"), path: "/tm-info/rooms" },
             ],
         },
         {
-            name: "Hisobotlar",
+            name: t("sidebar.reports"),
             icon: faChartSimple,
             path: "/reports",
             subItems: [
-                { name: "- O'qituvchilar", path: "/reports/teachers" },
+                { name: t("sidebar.reports_teachers"), path: "/reports/teachers" },
             ],
         },
     ];
@@ -71,7 +75,11 @@ function Sidebar() {
                     <div key={item.name} className="mb-1">
                         <button
                             onClick={() => toggleMenuItem(item.name)}
-                            className={`flex items-center justify-between w-full p-3 my-1 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-800 hover:text-blue-700 dark:hover:text-blue-200 transition-colors duration-200
+                            className={` flex items-center justify-between w-full p-3 my-1 rounded-lg
+    text-gray-700 dark:text-blue-400
+    hover:bg-blue-100 dark:hover:bg-blue-700
+    hover:text-blue-700 dark:hover:text-blue-200
+    transition-colors duration-200
                 ${openMenuItem.includes(item.name) ? 'bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200' : ''}
               `}
                         >

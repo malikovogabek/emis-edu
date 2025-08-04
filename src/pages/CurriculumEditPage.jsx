@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Select, Input, Button, message, Card } from "antd";
 import { fetchData, putData } from "../api/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 
 const { Option } = Select;
 
@@ -14,6 +16,8 @@ const CurriculumEditPage = () => {
     const [languagesOptions, setLanguagesOptions] = useState([]);
     const [formsOptions, setFormsOptions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
+
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -109,7 +113,7 @@ const CurriculumEditPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex-1">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">O‘quv Rejasini Tahrirlash</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{t("titlee")}</h1>
 
             <Card className="shadow-md">
                 <Form
@@ -118,7 +122,7 @@ const CurriculumEditPage = () => {
                     onFinish={handleUpdateCurriculum}
                     className="grid grid-cols-1 md:grid-cols-2 gap-3"
                 >
-                    <Form.Item label="Vazirlik tomonidan berilgan namunaviy o'quv reja" name="reja" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("curriculumTemplate")} name="reja" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang">
                             {curriculumOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name}</Option>
@@ -126,11 +130,11 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="O‘quv rejasi nomi" name="name" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("curriculumName")} name="name" rules={[{ required: true, message: "Majburiy" }]}>
                         <Input placeholder="Reja nomini kiriting" />
                     </Form.Item>
 
-                    <Form.Item label="Ta’lim shakli" name="shakl" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("eduForm")} name="shakl" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang">
                             {formsOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name}</Option>
@@ -138,7 +142,7 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Ta’lim yo‘nalishi" name="edu_direction" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("eduDirection")} name="edu_direction" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang">
                             {directionsOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name}</Option>
@@ -146,7 +150,7 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Birinchi o‘quv yili" name="start_year" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("startYear")} name="start_year" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang" onChange={handleStartYearChange}>
                             {startYearOptions.map((option, idx) => (
                                 <Option key={option.id} value={option.id} disabled={idx === startYearOptions.length - 1}>{option.name}</Option>
@@ -154,7 +158,7 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Ikkinchi o‘quv yili" name="start_year2" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("endYear2")} name="start_year2" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select disabled>
                             {startYearOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name}</Option>
@@ -162,7 +166,7 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Talim tili" name="edu_language_id" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("eduLanguage")} name="edu_language_id" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang">
                             {languagesOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name.uz}</Option>
@@ -170,7 +174,7 @@ const CurriculumEditPage = () => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Baholash turi" name="ballik" rules={[{ required: true, message: "Majburiy" }]}>
+                    <Form.Item label={t("evaluationType")} name="ballik" rules={[{ required: true, message: "Majburiy" }]}>
                         <Select placeholder="Tanlang">
                             {evaluationOptions.map(option => (
                                 <Option key={option.id} value={option.id}>{option.name}</Option>
@@ -180,8 +184,8 @@ const CurriculumEditPage = () => {
 
                     <Form.Item className="col-span-full">
                         <div className="flex justify-end gap-2">
-                            <Button onClick={() => navigate("/study-process/plans")}>Orqaga</Button>
-                            <Button type="primary" htmlType="submit" loading={loading}>Yangilash</Button>
+                            <Button onClick={() => navigate("/study-process/plans")}>{t("backButton")}</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>{t("updateButton")}</Button>
                         </div>
                     </Form.Item>
                 </Form>

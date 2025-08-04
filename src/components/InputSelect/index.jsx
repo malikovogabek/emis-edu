@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-
 export function InputSelect({ defaultValue = "", classes = "", data = [], noChange = false, label = "Tanlang", onSelect }) {
     const [inputValue, setInputValue] = useState(defaultValue);
     const [isOpen, setIsOpen] = useState(false);
     const [filteredData, setFilteredData] = useState([]);
     const wrapperRef = useRef(null);
 
-    // 🔄 data yoki inputValue o‘zgarganda filter qilish
+
     useEffect(() => {
         if (!inputValue) {
             setFilteredData(data);
@@ -18,7 +17,6 @@ export function InputSelect({ defaultValue = "", classes = "", data = [], noChan
         }
     }, [data, inputValue]);
 
-    // 🔒 tashqariga bosilganda yopish
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {

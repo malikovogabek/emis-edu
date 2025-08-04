@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { fetchData } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
 
 const StudyGroupsPage = () => {
     const [groups, setGroups] = useState([]);
@@ -9,7 +10,7 @@ const StudyGroupsPage = () => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
-
+    const { t } = useTranslation();
     const loadGroupsData = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -51,12 +52,12 @@ const StudyGroupsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 overflow-y-auto text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Guruhlar Ro'yxati</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("title3")}</h1>
             <div className="flex justify-between items-center mb-4">
                 <div className=''>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="py-2 px-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -67,7 +68,7 @@ const StudyGroupsPage = () => {
                         onClick={handleAddNewGroupClick}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        + Yangi kiritish
+                        {t("staffsAdd.yangi_kiritsh")}
                     </button>
                 </div>
             </div>
@@ -81,13 +82,13 @@ const StudyGroupsPage = () => {
                             <thead className="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Guruh nomi</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">O'quv rejasi</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ta'lim yo'nalishi</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kurs</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Joriy semestr</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ochilgan o'quv yili</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("groupName")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("curriculum")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("eduDirection")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("course")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("currentSemester")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("openedAcademicYear")}</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("Corsiculums.status")}</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -99,8 +100,8 @@ const StudyGroupsPage = () => {
                                     group.status.toLowerCase().includes(searchQuery.toLowerCase())
                                 ).map((group, index) => (
                                     <tr key={group.id}
-                                        onClick={() => handleViewGroupDetails(group.id)} // <--- O'zgartirish shu yerda: butun qatorni bosiladigan qildik
-                                        className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out" // Kursor va hover effekti
+                                        onClick={() => handleViewGroupDetails(group.id)}
+                                        className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
                                     >
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{index + 1}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{group.name || 'N/A'}</td>
@@ -117,7 +118,7 @@ const StudyGroupsPage = () => {
                                                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
 
                                             >
-                                                Aktiv
+                                                {t("activeStatus")}
 
                                             </span>
                                         </td>

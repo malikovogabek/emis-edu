@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login/index';
+import './i18n';
 
 
 import Dashboard from './pages/Dashboard';

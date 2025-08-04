@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { fetchData } from '../api/api';
 import Loader from "../components/Loader";
 //import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ReportsTeachersPage = () => {
     const [teachers, setTeachers] = useState([]);
@@ -14,6 +15,7 @@ const ReportsTeachersPage = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     // const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const loadPageData = useCallback(async () => {
         setLoading(true);
@@ -143,12 +145,12 @@ const ReportsTeachersPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <p className="text-2xl font-bold mb-4">O'qituvchilar </p>
+            <p className="text-2xl font-bold mb-4">{t("teachers")} </p>
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="py-2 px-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -176,11 +178,11 @@ const ReportsTeachersPage = () => {
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">N#</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Familiyasi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ismi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Otasining ismi</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Telefon raqami</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Pasport</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("lastNameLabel")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("firstNameLabel")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("fathersName")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("phonenumber")}</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t("passport")}</th>
 
                             </tr>
                         </thead>

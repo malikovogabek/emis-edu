@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Select, Input, Button, message, Card } from "antd";
 import { postData, fetchData } from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 
 const AddCurriculumPage = () => {
     const [form] = Form.useForm();
@@ -12,6 +14,7 @@ const AddCurriculumPage = () => {
     const [languagesOptions, setLanguagesOptions] = useState([]);
     const [formsOptions, setFormsOptions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
 
@@ -108,7 +111,7 @@ const AddCurriculumPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900  text-gray-900 dark:text-gray-100  flex-1">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Yangi O‘quv Rejasi Qo‘shish</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{t("titlee")}</h1>
 
             <Card className="shadow-md">
                 <Form className="grid grid-cols-1 md:grid-cols-2  gap-3"
@@ -117,11 +120,11 @@ const AddCurriculumPage = () => {
                     onFinish={handleAddCurriculum}
                 >
                     <Form.Item
-                        label="Vazirlik tomonidan berilgan namunaviy o'quv reja"
+                        label={t("curriculumTemplate")}
                         name="reja"
                         rules={[{ required: true, message: "Nomi majburiy" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {curriculumOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
                             ))}
@@ -129,19 +132,19 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="O‘quv rejasi nomi"
+                        label={t("curriculumName")}
                         name="name"
                         rules={[{ required: true, message: "Nomi majburiy" }]}
                     >
-                        <Input placeholder="Masalan: 2024-2027 uchun axborot texnologiyalari" />
+                        <Input placeholder={t("placeholder")} />
                     </Form.Item>
 
                     <Form.Item
-                        label="Ta’lim shakli"
+                        label={t("eduForm")}
                         name="shakl"
                         rules={[{ required: true, message: "Nomi majburiy" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {formsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
                             ))}
@@ -149,11 +152,11 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Ta’lim yo‘nalishi (nomi)"
+                        label={t("eduDirection")}
                         name="edu_direction"
                         rules={[{ required: true, message: "Yo‘nalish nomi kerak" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {directionsOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
                             ))}
@@ -161,11 +164,11 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Birinchi o‘quv yili"
+                        label={t("startYear")}
                         name="start_year"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
-                        <Select placeholder="Tanlang" onChange={handleStartYearChange}>
+                        <Select placeholder={t("selectPlaceholder")} onChange={handleStartYearChange}>
                             {startYearOptions.map((option, idx) => (
                                 <Select.Option key={option.id} value={option.id} disabled={idx === startYearOptions.length - 1}>{option.name}</Select.Option>
                             ))}
@@ -173,7 +176,7 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Ikkinchi o‘quv yili"
+                        label={t("endYear2")}
                         name="start_year2"
                         rules={[{ required: true, message: "Boshlanish yili kerak" }]}
                     >
@@ -188,11 +191,11 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Talim tili"
+                        label={t("eduLanguage")}
                         name="edu_language_id"
                         rules={[{ required: true, message: "Tilni tanlang" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {languagesOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name.uz}</Select.Option>
                             ))}
@@ -200,11 +203,11 @@ const AddCurriculumPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Baholash turi"
+                        label={t("evaluationType")}
                         name="ballik"
                         rules={[{ required: true, message: "Majburiy" }]}
                     >
-                        <Select placeholder="Tanlang">
+                        <Select placeholder={t("selectPlaceholder")}>
                             {evaluationOptions.map(option => (
                                 <Select.Option key={option.id} value={option.id}>{option.name}</Select.Option>
                             ))}
@@ -218,14 +221,14 @@ const AddCurriculumPage = () => {
                                 danger
                                 onClick={() => navigate("/study-process/plans")}
                             >
-                                Orqaga
+                                {t("backButton")}
                             </Button>
                             <Button
                                 type="primary"
                                 htmlType="submit"
                                 loading={loading}
                             >
-                                Qo'shish
+                                {t("addButton")}
                             </Button>
                         </div>
                     </Form.Item>

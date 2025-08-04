@@ -3,6 +3,8 @@ import { fetchData } from "../api/api";
 import StaffList from "../components/Staff/StaffList";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useTranslation } from 'react-i18next';
+
 
 const StaffPage = () => {
     const [staffData, setStaffData] = useState({
@@ -16,6 +18,8 @@ const StaffPage = () => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
 
     const loadStaffData = useCallback(async () => {
         setLoading(true);
@@ -52,12 +56,12 @@ const StaffPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-gray-100">
-            <h1 className="text-2xl font-bold mb-4">Xodimlar Ro'yxati</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("staffsAdd.xodim_ruy")}</h1>
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <input
                         type="text"
-                        placeholder="Qidirish..."
+                        placeholder={t("staffsAdd.qidrish")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-100"
@@ -68,7 +72,7 @@ const StaffPage = () => {
                         onClick={handleAddNewStaffClick}
                         className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition duration-200"
                     >
-                        + Yangi kiritish
+                        {t("staffsAdd.yangi_kiritsh")}
                     </button>
                 </div>
             </div>
@@ -95,7 +99,7 @@ const StaffPage = () => {
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <p className="text-gray-500 dark:text-gray-400">Hozircha xodimlar ma'lumotlari mavjud emas. Iltimos, keyinroq urinib ko'ring yoki yangi xodim qo'shing!</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("staffsAdd.xatolik")}</p>
                 </div>
             )}
         </div>

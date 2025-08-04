@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Input, InputNumber, Button, Select, Card, Spin, message } from 'antd';
 import { fetchData, putData } from '../api/api';
+import { useTranslation } from 'react-i18next';
+
 const { Option } = Select;
 
 const EditBuildingsPage = () => {
@@ -10,6 +12,8 @@ const EditBuildingsPage = () => {
     const [districts, setDistricts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const { t } = useTranslation();
+
 
     const navigate = useNavigate();
     const { buildingId } = useParams();
@@ -86,7 +90,7 @@ const EditBuildingsPage = () => {
 
     return (
         <div className="p-4 bg-gray-100 dark:bg-gray-900 flex-1">
-            <h1 className="text-2xl font-bold mb-4">Bino Korpusini Tahrirlash</h1>
+            <h1 className="text-2xl font-bold mb-4">{t("editBuilding")}</h1>
 
             <Card>
                 <Form
@@ -96,17 +100,17 @@ const EditBuildingsPage = () => {
                     disabled={loading}
                 >
                     <Form.Item
-                        label="Bino nomi"
+                        label={t("buildingNameLabel")}
                         name="name"
-                        rules={[{ required: true, message: 'Bino nomini kiriting' }]}
+                        rules={[{ required: true, message: t("buildingNameRequired") }]}
                     >
                         <Input />
                     </Form.Item>
 
                     <Form.Item
-                        label="Viloyat"
+                        label={t("regionLabel")}
                         name="region"
-                        rules={[{ required: true, message: 'Viloyatni tanlang' }]}
+                        rules={[{ required: true, message: t("regionRequired") }]}
                     >
                         <Select onChange={handleRegionChange}>
                             {regions.map(region => (
@@ -116,9 +120,9 @@ const EditBuildingsPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Tuman"
+                        label={t("districtLabel")}
                         name="district_id"
-                        rules={[{ required: true, message: 'Tumanni tanlang' }]}
+                        rules={[{ required: true, message: t("districtRequired") }]}
                     >
                         <Select>
                             {districts.map(d => (
@@ -128,34 +132,34 @@ const EditBuildingsPage = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Bino haqida ma'lumot"
+                        label={t("descriptionLabel")}
                         name="description"
-                        rules={[{ required: true, message: 'Ma’lumot kiriting' }]}
+                        rules={[{ required: true, message: t("descriptionRequired") }]}
                     >
                         <Input.TextArea rows={2} />
                     </Form.Item>
 
                     <Form.Item
-                        label="Bino nechta qavatdan iborat"
+                        label={t("floorCountLabel")}
                         name="floor_count"
-                        rules={[{ required: true, message: 'Qavat sonini kiriting' }]}
+                        rules={[{ required: true, message: t("floorCountRequired") }]}
                     >
                         <InputNumber min={1} className="w-full" />
                     </Form.Item>
                     <Form.Item
-                        label="Manzil (Location)"
+                        label={t("location")}
                         name="location"
-                        rules={[{ required: true, message: "Manzilni kiriting" }]}
+                        rules={[{ required: true, message: t("location") }]}
                     >
                         <Input />
                     </Form.Item>
 
                     <Form.Item className="flex justify-end space-x-2">
                         <Button type="primary" htmlType="submit" loading={loading}>
-                            Yangilash
+                            {t("updateButton")}
                         </Button>
                         <Button danger onClick={() => navigate('/tm-info/buildings')}>
-                            Orqaga
+                            {t("backButton")}
                         </Button>
                     </Form.Item>
                 </Form>

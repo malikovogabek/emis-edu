@@ -1,12 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { GoMoon } from "react-icons/go";
+import { GoSun } from "react-icons/go";
+import './Header.styles.css'
+
+const role = localStorage.getItem('selectRole')
 
 function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const { theme, toggleTheme } = useTheme();
     const { t, i18n } = useTranslation();
+
+    const isAdmin = role === 'admin'
+    const isTeacher = role === 'teacher'
 
     const toggleDropdown = () => {
         setIsDropdownOpen(prev => !prev);
@@ -28,6 +36,12 @@ function Header() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const onSelectRole = (role) => {
+        localStorage.setItem('selectRole', role)
+        window.location.href = '/'
+    }
+
 
     return (
         <header className="bg-white dark:bg-gray-800 shadow-sm h-20 gap-8 flex items-center justify-between px-4 sticky top-0 z-10">
@@ -69,9 +83,9 @@ function Header() {
 
                 <label className="inline-flex items-center space-x-2 cursor-pointer">
                     <input type="checkbox" className="sr-only" checked={theme === 'dark'} onChange={toggleTheme} />
-                    <span className={`relative w-10 h-5 transition duration-200 ease-in-out bg-gray-300 dark:bg-gray-700 rounded-full shadow-inner ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`}>
-                        <span className={`absolute top-0.5 left-0.5 bg-white dark:bg-gray-300 w-4 h-4 rounded-full shadow transform transition duration-200 ease-in-out ${theme === 'dark' ? 'translate-x-full' : ''}`}></span>
-                    </span>
+                    <GoSun /> <span className={`relative w-10 h-5 transition duration-200 ease-in-out bg-gray-300 dark:bg-gray-700 rounded-full shadow-inner ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`}>
+                        <span className={`absolute top-0.5 left-0.5 bg-white dark:bg-gray-300 w-4 h-4 rounded-full shadow transform transition duration-200 ease-in-out ${theme === 'dark' ? 'translate-x-full' : ''}`}> </span>
+                    </span> <GoMoon />
                 </label>
 
                 <div className="relative" ref={dropdownRef}>
@@ -91,10 +105,14 @@ function Header() {
 
                     {isDropdownOpen && (
                         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-20 border border-gray-200 dark:border-gray-600">
-                            <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <button onClick={() => onSelectRole('admin')} className={`header_toolbar_button ${isAdmin ? 'header_toolbar_button__active' : ''}`}>
                                 <svg className="h-5 w-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 {t('admin')}
-                            </a>
+                            </button>
+                            <button onClick={() => onSelectRole('teacher')} className={`header_toolbar_button ${isTeacher ? 'header_toolbar_button__active' : ''}`}>
+                                <svg className="h-5 w-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                {t("rolrTEACHER")}
+                            </button>
                             <button
                                 onClick={() => {
                                     console.log("Foydalanuvchi tizimdan chiqdi!");

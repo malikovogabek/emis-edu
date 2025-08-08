@@ -14,8 +14,8 @@ function TokenInput() {
     };
 
     return (
-        <div className="mb-6 p-4 bg-white border border-gray-300 rounded shadow-sm max-w-xl">
-            <h2 className="text-md font-semibold mb-2 text-gray-700">🔐 Ixtiyoriy: EMIS token kiriting</h2>
+        <div className="mb-6 p-4 bg-white border dark:bg-gray-800 border-gray-300 rounded shadow-sm max-w-xl">
+            <h2 className="text-md  font-semibold mb-2 text-gray-700">🔐 Ixtiyoriy: EMIS token kiriting</h2>
             <input
                 type="text"
                 value={token}

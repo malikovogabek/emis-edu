@@ -62,24 +62,22 @@ button:focus-visible {
   @apply text-yellow-50;
 }
 
-/* Ant Design v5 Select componentini dark modeda to‘g‘rilash */
 .dark .ant-select-selector {
-  background-color: #1f2937 !important; /* Tailwind: bg-gray-800 */
+  background-color: #1f2937 !important; 
   color: white !important;
-  border-color: #4b5563 !important; /* Tailwind: border-gray-600 */
+  border-color: #4b5563 !important;
 }
 
 .dark .ant-select-item-option-selected {
-  background-color: #374151 !important; /* Tailwind: bg-gray-700 */
+  background-color: #374151 !important;
   color: white !important;
 }
 
 .dark .ant-select-item-option-active {
-  background-color: #4b5563 !important; /* Tailwind: bg-gray-600 */
+  background-color: #4b5563 !important; 
   color: white !important;
 }
 
-/* Input uchun dark mode dizayni */
 .dark .ant-input {
   background-color: #1f2937 !important; /* Tailwind: bg-gray-800 */
   color: white !important;
@@ -165,4 +163,11 @@ button:focus-visible {
 }
 .dark:is(*) .text-gray-300 {
   color: rgb(96 165 250 / 1) !important; /* Tailwind text-blue-400 */
+}
+.dark :where(.css-dev-only-do-not-override-1rfzxih).ant-empty .ant-empty-description {
+  color: #fff; /* yoki kerakli rang */
+}
+
+.dark .ant-tabs .ant-tabs-tab {
+  color: rgba(255, 255, 255, 0.9); /* oq yoki yumshoq oq */
 }

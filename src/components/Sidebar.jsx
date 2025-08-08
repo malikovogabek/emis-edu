@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
+const role = localStorage.getItem('selectRole')
 
 function Sidebar() {
     const [openMenuItem, setOpenMenuItem] = useState([]);
@@ -59,6 +60,26 @@ function Sidebar() {
         },
     ];
 
+    const navItemsForTeacher = [
+        {
+            name: t("learning"),
+            path: "/learning",
+            subItems: [
+                { name: t("topics"), path: "/learning/topics" },
+                { name: t("classSchedule"), path: "/learning/schedule" },
+                { name: t("groups"), path: "/learning/groups" },
+            ],
+        },
+    ]
+
+    const navs = () => {
+        if (role) {
+            return role === 'admin' ? navItems : navItemsForTeacher
+        }
+
+        return navItems
+    }
+
 
     const toggleMenuItem = (itemName) => {
         setOpenMenuItem((prevOpen) =>
@@ -71,7 +92,7 @@ function Sidebar() {
     return (
         <aside className="w-64 bg-white dark:bg-gray-800 shadow-md overflow-y-auto pt-4 flex-shrink-0 min-h-full">
             <nav className="flex flex-col p-4">
-                {navItems.map((item) => (
+                {navs().map((item) => (
                     <div key={item.name} className="mb-1">
                         <button
                             onClick={() => toggleMenuItem(item.name)}

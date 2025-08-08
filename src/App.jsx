@@ -7,7 +7,6 @@ import Sidebar from './components/Sidebar';
 import Login from './pages/Login/index';
 import './i18n';
 
-
 import Dashboard from './pages/Dashboard';
 import StaffPage from './pages/StaffPage';
 import AddStaffPage from './pages/AddStaffPage';
@@ -37,7 +36,10 @@ import EditBuildingsPage from './pages/ EditBuildingsPage';
 import RoomsPage from './pages/RoomsPage';
 import AddRoomsPage from './pages/AddRoomsPage';
 import ReportsTeachersPage from './pages/ReportsTeachersPage';
-
+import TopicsPage from './pages/TopicsPage';
+import AddTopicPage from './pages/AddTopicPage';
+import EduGroupsPage from './pages/EduGroupsPage';
+import TeacherSchedulePage from './pages/TeacherSchedulePage';
 
 
 
@@ -101,10 +103,13 @@ function App() {
               <Route path="/tm-info/rooms/edit/:roomId" element={<AddRoomsPage />} />
               <Route path="/tm-info/rooms" element={<RoomsPage />} />
 
-
               <Route path="/reports" element={<ReportsHomePage />} />
               <Route path="/reports/teachers" element={<ReportsTeachersPage />} />
 
+              <Route path="/learning/topics" element={<TopicsPage />} />
+              <Route path="/learning/topics/add" element={< AddTopicPage />} />
+              <Route path='/learning/schedule' element={< TeacherSchedulePage />} />
+              <Route path='/learning/groups' element={< EduGroupsPage />} />
 
               <Route path="*" element={<p className="p-6 text-xl text-red-500">Sahifa topilmadi (404)</p>} />
             </Routes>
